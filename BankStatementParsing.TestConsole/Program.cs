@@ -166,10 +166,27 @@ namespace BankStatementParsing.TestConsole
                             continue;
                         }
                         
-                        var importedCount = importService.ImportStatement(result);
+                        var importedCount = importService.ImportStatement(result, fileName);
                         totalImported += importedCount;
                         totalProcessed++;
                         _logger.LogInformation("Imported {Count} transactions from {File}.", importedCount, fileName);
+
+                        // Move TXT and associated PDF to Processed folder if import was successful
+                        if (importedCount > 0)
+                        {
+                            var processedDir = Path.Combine(Path.GetDirectoryName(txtPath)!, "Processed");
+                            if (!Directory.Exists(processedDir))
+                                Directory.CreateDirectory(processedDir);
+                            var destTxt = Path.Combine(processedDir, Path.GetFileName(txtPath));
+                            File.Move(txtPath, destTxt, overwrite: true);
+                            var pdfPath = Path.ChangeExtension(txtPath, ".pdf");
+                            if (File.Exists(pdfPath))
+                            {
+                                var destPdf = Path.Combine(processedDir, Path.GetFileName(pdfPath));
+                                File.Move(pdfPath, destPdf, overwrite: true);
+                            }
+                            _logger.LogInformation("Moved {0} and associated PDF to {1}", Path.GetFileName(txtPath), processedDir);
+                        }
                     }
                 }
                 catch (Exception ex)

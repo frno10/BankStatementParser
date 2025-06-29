@@ -104,6 +104,7 @@ public class Statement
     public double? TotalCredits { get; set; }
     public int? NumDebits { get; set; }
     public int? NumCredits { get; set; }
+    public string StatementName { get; set; } = string.Empty;
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
 

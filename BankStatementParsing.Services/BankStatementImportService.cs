@@ -16,7 +16,7 @@ public class BankStatementImportService
         _logger = logger;
     }
 
-    public int ImportStatement(BankStatementData data)
+    public int ImportStatement(BankStatementData data, string statementName = "")
     {
         // Try to find or create account
         var account = _db.Accounts.FirstOrDefault(a => a.AccountNumber == data.AccountNumber);
@@ -43,7 +43,8 @@ public class BankStatementImportService
             TotalDebits = null,
             TotalCredits = null,
             NumDebits = null,
-            NumCredits = null
+            NumCredits = null,
+            StatementName = statementName ?? string.Empty
         };
         _db.Statements.Add(statement);
         _db.SaveChanges();
