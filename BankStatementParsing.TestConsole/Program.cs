@@ -247,6 +247,8 @@ namespace BankStatementParsing.TestConsole
                 var choice = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(choice)) choice = "1";
 
+                Console.WriteLine(); // Add a newline after selecting an option
+
                 using var scope = host.Services.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<BankStatementParsingContext>();
 
