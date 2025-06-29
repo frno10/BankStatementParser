@@ -124,14 +124,24 @@ public abstract class BaseBankStatementParser : IFileParserService
             fileStream.Position = 0;
 
         _logger.LogInformation("Extracting text from PDF to: {TxtFilePath}", txtFilePath);
-        using var document = PdfDocument.Open(fileStream);
-        var allText = string.Empty;
+        using var document = UglyToad.PdfPig.PdfDocument.Open(fileStream);
+        var sb = new System.Text.StringBuilder();
         for (int pageNum = 1; pageNum <= document.NumberOfPages; pageNum++)
         {
             var page = document.GetPage(pageNum);
-            allText += page.Text + "\n";
+            // Group words by Y position (line)
+            var words = page.GetWords().ToList();
+            var lines = words
+                .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 1))
+                .OrderByDescending(g => g.Key) // PDF Y=0 is bottom, so descending
+                .ToList();
+            foreach (var line in lines)
+            {
+                sb.AppendLine(string.Join(" ", line.OrderBy(w => w.BoundingBox.Left).Select(w => w.Text)));
+            }
+            sb.AppendLine(); // Extra newline between pages
         }
-        await File.WriteAllTextAsync(txtFilePath, allText);
+        await File.WriteAllTextAsync(txtFilePath, sb.ToString());
         _logger.LogInformation("PDF text extraction complete: {TxtFilePath}", txtFilePath);
         // Reset stream position for further reading
         if (fileStream.CanSeek)
