@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BankStatementParsing.Infrastructure;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankStatementParsing.TestConsole
 {
@@ -105,7 +106,16 @@ namespace BankStatementParsing.TestConsole
                 .ConfigureServices((context, services) =>
                 {
                     services.AddLogging(cfg => cfg.AddConsole().SetMinimumLevel(LogLevel.Information));
-                    services.AddDbContext<BankStatementParsingContext>();
+                    var connectionString = "Data Source=../Database/bankstatements.db";
+                    services.AddDbContext<BankStatementParsingContext>(options =>
+                        options.UseSqlite(connectionString));
+                    Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");
+                    if (connectionString.StartsWith("Data Source="))
+                    {
+                        var dbPath = connectionString.Substring("Data Source=".Length).Trim();
+                        var absoluteDbPath = Path.GetFullPath(dbPath, AppContext.BaseDirectory);
+                        Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
+                    }
                     services.AddTransient<PdfStatementParser>();
                     services.AddTransient<BankStatementParsingService>(sp =>
                         new BankStatementParsingService(new[] { sp.GetRequiredService<PdfStatementParser>() },

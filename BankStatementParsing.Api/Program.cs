@@ -1,10 +1,23 @@
 using BankStatementParsing.Api;
+using BankStatementParsing.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var connectionString = "Data Source=../Database/bankstatements.db";
+builder.Services.AddDbContext<BankStatementParsingContext>(options =>
+    options.UseSqlite(connectionString));
+Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");
+if (connectionString.StartsWith("Data Source="))
+{
+    var dbPath = connectionString.Substring("Data Source=".Length).Trim();
+    var absoluteDbPath = Path.GetFullPath(dbPath, AppContext.BaseDirectory);
+    Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
+}
 
 var app = builder.Build();
 

@@ -1,0 +1,234 @@
+@model BankStatementParsing.Web.Models.TransactionFilterViewModel
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 mb-0">Transactions</h1>
+            <p class="text-muted">Search, filter, and analyze your transactions</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="AccountId" class="form-label">Account</label>
+                        <select asp-for="AccountId" asp-items="Model.Accounts" class="form-select">
+                            <option value="">All Accounts</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="MerchantId" class="form-label">Merchant</label>
+                        <select asp-for="MerchantId" asp-items="Model.Merchants" class="form-select">
+                            <option value="">All Merchants</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Currency" class="form-label">Currency</label>
+                        <select asp-for="Currency" asp-items="Model.Currencies" class="form-select">
+                            <option value="">All Currencies</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="IsCredit" class="form-label">Transaction Type</label>
+                        <select asp-for="IsCredit" class="form-select">
+                            <option value="">All Types</option>
+                            <option value="true">Credits Only</option>
+                            <option value="false">Debits Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="DateFrom" class="form-label">Date From</label>
+                        <input asp-for="DateFrom" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="DateTo" class="form-label">Date To</label>
+                        <input asp-for="DateTo" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="AmountFrom" class="form-label">Amount From</label>
+                        <input asp-for="AmountFrom" type="number" step="0.01" class="form-control" placeholder="Min amount" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="AmountTo" class="form-label">Amount To</label>
+                        <input asp-for="AmountTo" type="number" step="0.01" class="form-control" placeholder="Max amount" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Description" class="form-label">Description Contains</label>
+                        <input asp-for="Description" type="text" class="form-control" placeholder="Search in description..." />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="PageSize" class="form-label">Results Per Page</label>
+                        <select asp-for="PageSize" class="form-select">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">Clear</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden fields for sorting and pagination -->
+                <input asp-for="SortBy" type="hidden" />
+                <input asp-for="SortDirection" type="hidden" />
+                <input asp-for="Page" type="hidden" />
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Transactions</div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">@Model.TotalCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Credits</div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">@Model.TotalCredits.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Debits</div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">@Model.TotalDebits.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Net Amount</div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">@Model.NetAmount.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Transactions (@Model.TotalCount results)
+            </h6>
+            <div>
+                <a href="@Url.Action("Export", Model)" class="btn btn-success btn-sm">
+                    <i class="fas fa-download"></i> Export CSV
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Transactions.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Account</th>
+                                <th>Merchant</th>
+                                <th>Tags</th>
+                                <th>Reference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var transaction in Model.Transactions)
+                            {
+                                <tr>
+                                    <td>@transaction.Date.ToString("MM/dd/yyyy")</td>
+                                    <td>
+                                        <span title="@transaction.Description">
+                                            @(transaction.Description.Length > 50 ? transaction.Description.Substring(0, 50) + "..." : transaction.Description)
+                                        </span>
+                                    </td>
+                                    <td class="@(transaction.IsCredit ? "text-success" : "text-danger")">
+                                        <strong>@transaction.Amount.ToString("C")</strong>
+                                        <small class="text-muted">@transaction.Currency</small>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @transaction.AccountNumber<br/>
+                                            <span class="text-muted">@transaction.BankName</span>
+                                        </small>
+                                    </td>
+                                    <td>@(transaction.MerchantName ?? "N/A")</td>
+                                    <td>
+                                        @foreach (var tag in transaction.MerchantTags.Union(transaction.TransactionTags).Take(3))
+                                        {
+                                            <span class="badge badge-secondary mr-1">@tag</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">@transaction.Reference</small>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (Model.TotalPages > 1)
+                {
+                    <nav aria-label="Transaction pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { Page = Model.Page - 1 })">Previous</a>
+                            </li>
+
+                            @for (int i = Math.Max(1, Model.Page - 5); i <= Math.Min(Model.TotalPages, Model.Page + 5); i++)
+                            {
+                                <li class="page-item @(i == Model.Page ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { Page = i })">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { Page = Model.Page + 1 })">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>No transactions found</h5>
+                    <p class="text-muted">Try adjusting your filters or search criteria.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div> 

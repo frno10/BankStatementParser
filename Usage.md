@@ -47,3 +47,51 @@ dotnet run --project BankStatementParsing.TestConsole -- --force
 ---
 
 If you have questions or need to extend the workflow, see the code in `BankStatementParsing.TestConsole/Program.cs` or ask your AI assistant for help! 
+
+---
+
+## Running and Using the Web Application
+
+The web application provides a modern dashboard and advanced transaction management interface for reviewing imported bank statement data.
+
+### Start the Web App
+
+To run the web application:
+
+```sh
+dotnet run --project BankStatementParsing.Web
+```
+
+- The app will start on:  
+  - HTTP: [http://localhost:1164](http://localhost:1164)  
+  - HTTPS: [https://localhost:1165](https://localhost:1165)
+- The browser should open automatically. If not, open your browser and navigate to the above URL.
+
+### Features
+
+- **Dashboard:**
+  - Financial summary cards (accounts, credits, debits, net balance)
+  - Interactive charts (monthly trends, category breakdown)
+  - Account summaries, top merchants, recent transactions
+- **Transactions:**
+  - Advanced filtering (account, merchant, date, amount, type, description, tags, etc.)
+  - Sortable, paginated transaction table
+  - CSV export for filtered results
+- **Analytics:**
+  - (Placeholder for future advanced analytics)
+
+### Navigation
+- Use the top navigation bar to switch between Dashboard, Transactions, Analytics, and Settings.
+- All pages are responsive and mobile-friendly.
+
+### Data
+- If you have already imported data using the batch parser, it will be visible in the dashboard and transaction views.
+- If no data is present, the dashboard and tables will indicate that no records are available.
+
+### Database
+- The web app uses the same SQLite database: `Database/bankstatements.db`
+- Any data imported via the batch parser will be immediately available in the web interface.
+
+---
+
+For further help or troubleshooting, see the code in `BankStatementParsing.Web/` or ask your AI assistant! 
