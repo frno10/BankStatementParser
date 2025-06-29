@@ -106,16 +106,14 @@ namespace BankStatementParsing.TestConsole
                 .ConfigureServices((context, services) =>
                 {
                     services.AddLogging(cfg => cfg.AddConsole().SetMinimumLevel(LogLevel.Information));
-                    var connectionString = "Data Source=../Database/bankstatements.db";
+                    // Compute absolute path to the shared database
+                    var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+                    var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");
+                    var connectionString = $"Data Source={absoluteDbPath}";
                     services.AddDbContext<BankStatementParsingContext>(options =>
                         options.UseSqlite(connectionString));
                     Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");
-                    if (connectionString.StartsWith("Data Source="))
-                    {
-                        var dbPath = connectionString.Substring("Data Source=".Length).Trim();
-                        var absoluteDbPath = Path.GetFullPath(dbPath, AppContext.BaseDirectory);
-                        Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
-                    }
+                    Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
                     services.AddTransient<PdfStatementParser>();
                     services.AddTransient<BankStatementParsingService>(sp =>
                         new BankStatementParsingService(new[] { sp.GetRequiredService<PdfStatementParser>() },

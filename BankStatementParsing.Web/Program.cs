@@ -12,21 +12,16 @@ Console.Title = "BankStatementParsing.Web (ASP.NET Core)";
 // Log the process ID for Task Manager identification
 Console.WriteLine($"[DEBUG] Process ID: {System.Diagnostics.Process.GetCurrentProcess().Id}");
 
-// Add Entity Framework
-var connectionString = "Data Source=../Database/bankstatements.db";
+// Compute absolute path to the shared database
+var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");
+var connectionString = $"Data Source={absoluteDbPath}";
 builder.Services.AddDbContext<BankStatementParsingContext>(options =>
     options.UseSqlite(connectionString));
 
-// Log the connection string at startup
+// Log the connection string and absolute path at startup
 Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");
-
-// Log the absolute path to the SQLite database file
-if (connectionString.StartsWith("Data Source="))
-{
-    var dbPath = connectionString.Substring("Data Source=".Length).Trim();
-    var absoluteDbPath = Path.GetFullPath(dbPath, AppContext.BaseDirectory);
-    Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
-}
+Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
 
 var app = builder.Build();
 
