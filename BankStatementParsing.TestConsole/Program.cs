@@ -235,50 +235,53 @@ namespace BankStatementParsing.TestConsole
                 })
                 .Build();
 
-            // Prompt for DB clear options
-            Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Continue without deleting or parsing (default)");
-            Console.WriteLine("2. Delete all EXCEPT Merchants (Places), Tags, and their join table");
-            Console.WriteLine("3. Delete ALL data (irreversible)");
-            Console.WriteLine("4. Extract text from PDFs to TXT files");
-            Console.WriteLine("5. Parse TXT files and import to database");
-            Console.Write("Enter your choice (1/2/3/4/5): ");
-            var choice = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(choice)) choice = "1";
+            while (true)
+            {
+                Console.WriteLine("Choose an option:");
+                Console.WriteLine("1. Exit");
+                Console.WriteLine("2. Delete all EXCEPT Merchants (Places), Tags, and their join table");
+                Console.WriteLine("3. Delete ALL data (irreversible)");
+                Console.WriteLine("4. Extract text from PDFs to TXT files");
+                Console.WriteLine("5. Parse TXT files and import to database");
+                Console.Write("Enter your choice (1/2/3/4/5): ");
+                var choice = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(choice)) choice = "1";
 
-            using var scope = host.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<BankStatementParsingContext>();
+                using var scope = host.Services.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<BankStatementParsingContext>();
 
-            if (choice == "2")
-            {
-                await ClearAllExceptMerchantsAndTagsAsync(db);
-                Console.WriteLine("[INFO] All data except Merchants, Tags, and their join table deleted.");
-            }
-            else if (choice == "3")
-            {
-                await ClearAllDataAsync(db);
-                Console.WriteLine("[INFO] All data deleted.");
-            }
-            else
-            {
-                Console.WriteLine("[INFO] No data deleted.");
-            }
-
-            if (choice == "4")
-            {
-                var force = args.Contains("--force");
-                var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
-                await batchService.ExtractTextFromPdfsAsync(force);
-            }
-            else if (choice == "5")
-            {
-                var force = args.Contains("--force");
-                var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
-                await batchService.ParseTxtFilesAsync(force);
-            }
-            else
-            {
-                Console.WriteLine("[INFO] No processing selected.");
+                if (choice == "1")
+                {
+                    Console.WriteLine("[INFO] Exiting.");
+                    break;
+                }
+                else if (choice == "2")
+                {
+                    await ClearAllExceptMerchantsAndTagsAsync(db);
+                    Console.WriteLine("[INFO] All data except Merchants, Tags, and their join table deleted.");
+                }
+                else if (choice == "3")
+                {
+                    await ClearAllDataAsync(db);
+                    Console.WriteLine("[INFO] All data deleted.");
+                }
+                else if (choice == "4")
+                {
+                    var force = args.Contains("--force");
+                    var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
+                    await batchService.ExtractTextFromPdfsAsync(force);
+                }
+                else if (choice == "5")
+                {
+                    var force = args.Contains("--force");
+                    var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
+                    await batchService.ParseTxtFilesAsync(force);
+                }
+                else
+                {
+                    Console.WriteLine("[INFO] Invalid option. Please try again.");
+                }
+                Console.WriteLine();
             }
         }
 
