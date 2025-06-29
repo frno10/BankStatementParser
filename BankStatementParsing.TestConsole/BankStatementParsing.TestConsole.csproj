@@ -3,9 +3,14 @@
   <ItemGroup>
     <ProjectReference Include="..\BankStatementParsing.Core\BankStatementParsing.Core.csproj" />
     <ProjectReference Include="..\BankStatementParsing.Services\BankStatementParsing.Services.csproj" />
+    <ProjectReference Include="..\BankStatementParsing.Infrastructure\BankStatementParsing.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
   </ItemGroup>
 

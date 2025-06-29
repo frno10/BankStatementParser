@@ -8,11 +8,11 @@ using System.Globalization;
 
 namespace BankStatementParsing.Services.Parsers;
 
-public class MskbPdfParser : BaseBankStatementParser
+public class PdfStatementParser : BaseBankStatementParser
 {
-    public override string SupportedBankName => "MSKB";
+    public override string SupportedBankName => "Bank";
 
-    public MskbPdfParser(ILogger<MskbPdfParser> logger) : base(logger) { }
+    public PdfStatementParser(ILogger<PdfStatementParser> logger) : base(logger) { }
 
     public override bool CanParse(string fileName, string bankName)
     {
