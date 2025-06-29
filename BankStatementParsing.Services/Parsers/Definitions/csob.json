@@ -28,7 +28,7 @@
       {
         "label": "Miesto:",
         "field": "merchant",
-        "pattern": "Miesto: (.+)"
+        "pattern": "Miesto: ?(.*)"
       },
       {
         "label": "Suma:",

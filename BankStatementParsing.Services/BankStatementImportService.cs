@@ -60,6 +60,19 @@ public class BankStatementImportService
             if (exists)
                 continue;
 
+            int? merchantId = null;
+            if (!string.IsNullOrWhiteSpace(t.MerchantName))
+            {
+                var merchant = _db.Merchants.FirstOrDefault(m => m.Name.ToLower() == t.MerchantName.ToLower());
+                if (merchant == null)
+                {
+                    merchant = new Merchant { Name = t.MerchantName };
+                    _db.Merchants.Add(merchant);
+                    _db.SaveChanges();
+                }
+                merchantId = merchant.Id;
+            }
+
             var entity = new BankStatementParsing.Infrastructure.Transaction
             {
                 StatementId = statement.Id,
@@ -68,10 +81,10 @@ public class BankStatementImportService
                 Amount = (double)t.Amount,
                 Currency = data.Currency,
                 Reference = t.Reference,
-                MerchantId = null,
-                Countervalue = null,
+                MerchantId = merchantId,
+                Countervalue = t.Countervalue.HasValue ? (double?)t.Countervalue.Value : null,
                 OriginalCurrency = null,
-                ExchangeRate = null,
+                ExchangeRate = t.ExchangeRate.HasValue ? (double?)t.ExchangeRate.Value : null,
                 ExtraInfo = null
             };
             _db.Transactions.Add(entity);
