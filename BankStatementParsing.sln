@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankStatementParsing.Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankStatementParsing.TestConsole", "BankStatementParsing.TestConsole\BankStatementParsing.TestConsole.csproj", "{607164BA-C020-48B8-AAF9-7B0A375365F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankStatementParsing.Web", "BankStatementParsing.Web\BankStatementParsing.Web.csproj", "{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{607164BA-C020-48B8-AAF9-7B0A375365F1}.Release|x64.Build.0 = Release|Any CPU
 		{607164BA-C020-48B8-AAF9-7B0A375365F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{607164BA-C020-48B8-AAF9-7B0A375365F1}.Release|x86.Build.0 = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|x64.Build.0 = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2A4FD5D-F4A8-4E1B-B224-2E1D9DE12E2E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
