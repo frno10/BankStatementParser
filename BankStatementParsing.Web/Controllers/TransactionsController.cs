@@ -43,10 +43,10 @@ public class TransactionsController : Controller
             query = query.Where(t => t.Date <= model.DateTo.Value);
 
         if (model.AmountFrom.HasValue)
-            query = query.Where(t => Math.Abs(t.Amount) >= (double)model.AmountFrom.Value);
+            query = query.Where(t => (t.Amount >= (double)model.AmountFrom.Value) || (t.Amount <= -(double)model.AmountFrom.Value));
 
         if (model.AmountTo.HasValue)
-            query = query.Where(t => Math.Abs(t.Amount) <= (double)model.AmountTo.Value);
+            query = query.Where(t => (t.Amount <= (double)model.AmountTo.Value && t.Amount >= 0) || (t.Amount >= -(double)model.AmountTo.Value && t.Amount < 0));
 
         if (!string.IsNullOrWhiteSpace(model.Description))
             query = query.Where(t => t.Description != null && t.Description.Contains(model.Description));

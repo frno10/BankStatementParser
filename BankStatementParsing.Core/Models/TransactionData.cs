@@ -13,4 +13,7 @@ public class TransactionData
     public decimal Balance { get; set; }
     public string? Counterparty { get; set; }
     public string? Purpose { get; set; }
+    public string? MerchantName { get; set; }
+    public decimal? Countervalue { get; set; }
+    public decimal? ExchangeRate { get; set; }
 } 

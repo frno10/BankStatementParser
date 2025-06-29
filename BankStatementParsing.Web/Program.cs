@@ -15,7 +15,7 @@ Console.WriteLine($"[DEBUG] Process ID: {System.Diagnostics.Process.GetCurrentPr
 // Compute absolute path to the shared database
 var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
 var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");
-var connectionString = $"Data Source={absoluteDbPath}";
+var connectionString = $"Data Source={absoluteDbPath};Mode=ReadOnly";
 builder.Services.AddDbContext<BankStatementParsingContext>(options =>
     options.UseSqlite(connectionString));
 

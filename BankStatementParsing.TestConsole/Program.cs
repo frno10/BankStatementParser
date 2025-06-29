@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using BankStatementParsing.Infrastructure;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using UglyToad.PdfPig;
 
 namespace BankStatementParsing.TestConsole
 {
@@ -39,8 +40,22 @@ namespace BankStatementParsing.TestConsole
         public async Task RunAsync(bool force)
         {
             var pdfFiles = new List<string>();
-            var solutionDir = Directory.GetCurrentDirectory();
-            Console.WriteLine($"[DEBUG] Current Directory: {solutionDir}");
+            
+            // Find solution root by looking for .sln file
+            var currentDir = Directory.GetCurrentDirectory();
+            var solutionDir = currentDir;
+            
+            // Navigate up from bin/Debug/net9.0 to find the solution root
+            for (int i = 0; i < 5 && solutionDir != null; i++)
+            {
+                if (File.Exists(Path.Combine(solutionDir, "BankStatementParsing.sln")))
+                    break;
+                solutionDir = Path.GetDirectoryName(solutionDir);
+            }
+            
+            Console.WriteLine($"[DEBUG] Current Directory: {currentDir}");
+            Console.WriteLine($"[DEBUG] Solution Directory: {solutionDir}");
+            
             if (solutionDir != null)
             {
                 var accountDataDir = Path.Combine(solutionDir, "AccountData");
@@ -76,13 +91,31 @@ namespace BankStatementParsing.TestConsole
                 _logger.LogInformation("Processing {File}...", Path.GetFileName(pdfPath));
                 try
                 {
-                    using var fileStream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
+                    // Extract text from PDF and write to .txt file
+                    using (var fileStream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read))
+                    {
+                        var text = ExtractTextFromPdf(fileStream);
+                        File.WriteAllText(txtPath, text);
+                        fileStream.Position = 0;
+                    }
+                    // Use the .txt file for parsing
+                    string statementText = File.ReadAllText(txtPath);
                     var fileName = Path.GetFileName(pdfPath);
-                    var result = await _parsingService.ParseStatementAsync(fileStream, fileName, "Bank");
-                    // Use a new scope for DbContext per import
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var importService = scope.ServiceProvider.GetRequiredService<BankStatementImportService>();
+                        var parsingService = scope.ServiceProvider.GetRequiredService<BankStatementParsingService>();
+                        
+                        // Use the parsing service with stream
+                        using var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(statementText));
+                        var result = await parsingService.ParseStatementAsync(textStream, fileName, "CSOB");
+                        
+                        if (result == null || result.Transactions.Count == 0)
+                        {
+                            _logger.LogError("Failed to parse statement: {File}", fileName);
+                            continue;
+                        }
+                        
                         var importedCount = importService.ImportStatement(result);
                         totalImported += importedCount;
                         totalProcessed++;
@@ -95,6 +128,21 @@ namespace BankStatementParsing.TestConsole
                 }
             }
             _logger.LogInformation("Processed {Count} PDFs. Imported {Total} transactions in total.", totalProcessed, totalImported);
+        }
+
+        private string ExtractTextFromPdf(Stream fileStream)
+        {
+            // Use PdfPig to extract text from all pages
+            fileStream.Position = 0;
+            using var document = PdfDocument.Open(fileStream);
+            var sb = new System.Text.StringBuilder();
+            for (int pageNum = 1; pageNum <= document.NumberOfPages; pageNum++)
+            {
+                var page = document.GetPage(pageNum);
+                sb.AppendLine(page.Text);
+            }
+            fileStream.Position = 0;
+            return sb.ToString();
         }
     }
 
@@ -125,33 +173,42 @@ namespace BankStatementParsing.TestConsole
 
             // Prompt for DB clear options
             Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Delete ALL data (irreversible)");
+            Console.WriteLine("1. Continue without deleting or parsing (default)");
             Console.WriteLine("2. Delete all EXCEPT Merchants (Places), Tags, and their join table");
-            Console.WriteLine("3. Continue without deleting");
-            Console.Write("Enter your choice (1/2/3): ");
+            Console.WriteLine("3. Delete ALL data (irreversible)");
+            Console.WriteLine("4. Parse/import data from PDFs (batch parser)");
+            Console.Write("Enter your choice (1/2/3/4): ");
             var choice = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(choice)) choice = "1";
 
             using var scope = host.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BankStatementParsingContext>();
 
-            if (choice == "1")
-            {
-                await ClearAllDataAsync(db);
-                Console.WriteLine("[INFO] All data deleted.");
-            }
-            else if (choice == "2")
+            if (choice == "2")
             {
                 await ClearAllExceptMerchantsAndTagsAsync(db);
                 Console.WriteLine("[INFO] All data except Merchants, Tags, and their join table deleted.");
+            }
+            else if (choice == "3")
+            {
+                await ClearAllDataAsync(db);
+                Console.WriteLine("[INFO] All data deleted.");
             }
             else
             {
                 Console.WriteLine("[INFO] No data deleted.");
             }
 
-            var force = args.Contains("--force");
-            var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
-            await batchService.RunAsync(force);
+            if (choice == "4")
+            {
+                var force = args.Contains("--force");
+                var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
+                await batchService.RunAsync(force);
+            }
+            else
+            {
+                Console.WriteLine("[INFO] Batch parsing not run.");
+            }
         }
 
         private static async Task ClearAllDataAsync(BankStatementParsingContext db)

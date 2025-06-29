@@ -1,0 +1,45 @@
+{
+  "bankName": "CSOB",
+  "recognition": {
+    "keywords": ["Československá obchodná banka", "CSOB"],
+    "accountNumberPattern": "\\d{10}/\\d{4}"
+  },
+  "accountInfo": {
+    "accountNumber": "Účet číslo:(\\d+/\\d+)",
+    "accountHolder": "Názov účtu:([^\\n]+)"
+  },
+  "period": {
+    "start": "Obdobie: (\\d{1,2}\\. \\d{1,2}\\. \\d{4})",
+    "end": "Obdobie: \\d{1,2}\\. \\d{1,2}\\. \\d{4} - (\\d{1,2}\\. \\d{1,2}\\. \\d{4})"
+  },
+  "transaction": {
+    "mainPattern": "(\\d{1,2}\\. \\d{1,2}\\.)([^\\d-]+?)(-?\\d+[\\d\\s,.-]*?)(?=Ref\\.|$|\\d{1,2}\\. \\d{1,2}\\.)",
+    "fields": {
+      "date": 1,
+      "description": 2,
+      "amount": 3
+    },
+    "details": [
+      {
+        "label": "Ref. platiteľa:",
+        "field": "reference",
+        "pattern": "Ref\\. platiteľa: (.+)"
+      },
+      {
+        "label": "Miesto:",
+        "field": "merchant",
+        "pattern": "Miesto: (.+)"
+      },
+      {
+        "label": "Suma:",
+        "field": "originalAmount",
+        "pattern": "Suma: ([^\\n]+)"
+      },
+      {
+        "label": "Kurz:",
+        "field": "exchangeRate",
+        "pattern": "Kurz: ([^\\n]+)"
+      }
+    ]
+  }
+} 

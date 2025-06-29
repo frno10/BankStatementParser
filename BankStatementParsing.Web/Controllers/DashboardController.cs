@@ -56,23 +56,26 @@ public class DashboardController : Controller
 
     private async Task<List<AccountSummary>> GetAccountSummaries()
     {
-        return await _context.Accounts
-            .Select(a => new AccountSummary
-            {
-                AccountId = a.Id,
-                AccountNumber = a.AccountNumber,
-                BankName = a.Name ?? "Unknown Bank",
-                Currency = a.Currency ?? "Unknown",
-                TransactionCount = a.Statements.SelectMany(s => s.Transactions).Count(),
-                TotalCredits = (decimal)a.Statements.SelectMany(s => s.Transactions)
-                    .Where(t => t.Amount > 0).Sum(t => t.Amount),
-                TotalDebits = Math.Abs((decimal)a.Statements.SelectMany(s => s.Transactions)
-                    .Where(t => t.Amount < 0).Sum(t => t.Amount)),
-                NetBalance = (decimal)a.Statements.SelectMany(s => s.Transactions).Sum(t => t.Amount),
-                LastTransactionDate = a.Statements.SelectMany(s => s.Transactions)
-                    .Max(t => (DateTime?)t.Date)
-            })
+        var accounts = await _context.Accounts
+            .Include(a => a.Statements)
+                .ThenInclude(s => s.Transactions)
             .ToListAsync();
+
+        return accounts.Select(a => new AccountSummary
+        {
+            AccountId = a.Id,
+            AccountNumber = a.AccountNumber,
+            BankName = a.Name ?? "Unknown Bank",
+            Currency = a.Currency ?? "Unknown",
+            TransactionCount = a.Statements.SelectMany(s => s.Transactions).Count(),
+            TotalCredits = (decimal)a.Statements.SelectMany(s => s.Transactions)
+                .Where(t => t.Amount > 0).Sum(t => t.Amount),
+            TotalDebits = Math.Abs((decimal)a.Statements.SelectMany(s => s.Transactions)
+                .Where(t => t.Amount < 0).Sum(t => t.Amount)),
+            NetBalance = (decimal)a.Statements.SelectMany(s => s.Transactions).Sum(t => t.Amount),
+            LastTransactionDate = a.Statements.SelectMany(s => s.Transactions)
+                .Max(t => (DateTime?)t.Date)
+        }).ToList();
     }
 
     private async Task<List<MonthlyTransactionSummary>> GetMonthlyTrends()
@@ -89,12 +92,18 @@ public class DashboardController : Controller
                 MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key.Month),
                 TransactionCount = g.Count(),
                 TotalCredits = (decimal)g.Where(t => t.Amount > 0).Sum(t => t.Amount),
-                TotalDebits = Math.Abs((decimal)g.Where(t => t.Amount < 0).Sum(t => t.Amount)),
+                TotalDebits = (decimal)g.Where(t => t.Amount < 0).Sum(t => t.Amount),
                 NetAmount = (decimal)g.Sum(t => t.Amount)
             })
             .OrderBy(m => m.Year)
             .ThenBy(m => m.Month)
             .ToListAsync();
+
+        // Apply Math.Abs on client side
+        foreach (var item in monthlyData)
+        {
+            item.TotalDebits = Math.Abs(item.TotalDebits);
+        }
 
         return monthlyData ?? new List<MonthlyTransactionSummary>();
     }
@@ -123,16 +132,23 @@ public class DashboardController : Controller
 
     private async Task<List<TransactionCategorySummary>> GetCategoryBreakdown()
     {
-        var totalAmount = await _context.Transactions
-            .Where(t => t.Amount < 0) // Only debits for expense categories
-            .SumAsync(t => Math.Abs(t.Amount));
+        // Get total amount using client-side evaluation
+        var debitTransactions = await _context.Transactions
+            .Where(t => t.Amount < 0)
+            .ToListAsync();
+        
+        var totalAmount = debitTransactions.Sum(t => Math.Abs(t.Amount));
 
         if (totalAmount == 0) return new List<TransactionCategorySummary>();
 
-        var categories = await _context.Tags
+        // Get categories with transactions using client-side evaluation
+        var tags = await _context.Tags
             .Include(t => t.MerchantTags)
                 .ThenInclude(mt => mt.Merchant)
                     .ThenInclude(m => m.Transactions)
+            .ToListAsync();
+
+        var categories = tags
             .Select(t => new TransactionCategorySummary
             {
                 Category = t.Name,
@@ -148,14 +164,14 @@ public class DashboardController : Controller
             })
             .Where(c => c.TotalAmount > 0)
             .OrderByDescending(c => c.TotalAmount)
-            .ToListAsync();
+            .ToList();
 
         // Calculate percentages
-        foreach (var category in categories ?? new List<TransactionCategorySummary>())
+        foreach (var category in categories)
         {
             category.Percentage = Math.Round((category.TotalAmount / (decimal)totalAmount) * 100, 2);
         }
 
-        return categories ?? new List<TransactionCategorySummary>();
+        return categories;
     }
 } 
