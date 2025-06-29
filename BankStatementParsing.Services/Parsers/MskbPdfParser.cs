@@ -25,7 +25,33 @@ public class MskbPdfParser : BaseBankStatementParser
         try
         {
             _logger.LogInformation("Starting to parse MSKB PDF: {FileName}", fileName);
-            
+
+            // Always resolve the full path to the PDF for text extraction
+            string pdfFilePath = fileName;
+            if (!Path.IsPathRooted(pdfFilePath))
+            {
+                // Try to find the PDF in the AccountData directory if not rooted
+                var possiblePath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+                if (File.Exists(possiblePath))
+                    pdfFilePath = possiblePath;
+                else
+                {
+                    // Search AccountData for the file
+                    var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory())?.FullName;
+                    if (solutionDir != null)
+                    {
+                        var accountDataDir = Path.Combine(solutionDir, "AccountData");
+                        if (Directory.Exists(accountDataDir))
+                        {
+                            var found = Directory.GetFiles(accountDataDir, Path.GetFileName(fileName), SearchOption.AllDirectories).FirstOrDefault();
+                            if (found != null)
+                                pdfFilePath = found;
+                        }
+                    }
+                }
+            }
+            await ExtractTextToFileIfNeededAsync(fileStream, pdfFilePath);
+
             var statementData = new BankStatementData
             {
                 BankName = "Moscow Bank (MSKB)",

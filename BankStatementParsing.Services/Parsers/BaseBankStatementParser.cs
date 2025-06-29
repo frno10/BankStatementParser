@@ -4,6 +4,7 @@ using BankStatementParsing.Core.Enums;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using UglyToad.PdfPig;
 
 namespace BankStatementParsing.Services.Parsers;
 
@@ -107,5 +108,34 @@ public abstract class BaseBankStatementParser : IFileParserService
             return TransactionType.Credit;
         else
             return TransactionType.Debit;
+    }
+
+    protected async Task<string> ExtractTextToFileIfNeededAsync(Stream fileStream, string pdfFilePath)
+    {
+        var txtFilePath = Path.ChangeExtension(pdfFilePath, ".txt");
+        if (File.Exists(txtFilePath))
+        {
+            _logger.LogInformation("Text file already exists: {TxtFilePath}, skipping extraction.", txtFilePath);
+            return txtFilePath;
+        }
+
+        // Reset stream position in case it was read before
+        if (fileStream.CanSeek)
+            fileStream.Position = 0;
+
+        _logger.LogInformation("Extracting text from PDF to: {TxtFilePath}", txtFilePath);
+        using var document = PdfDocument.Open(fileStream);
+        var allText = string.Empty;
+        for (int pageNum = 1; pageNum <= document.NumberOfPages; pageNum++)
+        {
+            var page = document.GetPage(pageNum);
+            allText += page.Text + "\n";
+        }
+        await File.WriteAllTextAsync(txtFilePath, allText);
+        _logger.LogInformation("PDF text extraction complete: {TxtFilePath}", txtFilePath);
+        // Reset stream position for further reading
+        if (fileStream.CanSeek)
+            fileStream.Position = 0;
+        return txtFilePath;
     }
 } 

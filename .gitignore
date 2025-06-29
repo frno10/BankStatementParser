@@ -1,0 +1,99 @@
+# .NET build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Logs
+Logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored if you use PackageReference
+packages/
+# NuGet v3's project.json files produces this folder
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Publish output
+publish/
+
+# Test results
+TestResults/
+*.TestResults/
+
+# Database
+Database/*.db
+Database/*.sqlite
+
+# Others
+*.swp
+*.bak
+*.tmp
+*.tmp.*
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# DotCover
+*.dotCover
+
+# NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+
+# SonarQube
+.sonar/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Local secrets
+secrets.json
+appsettings.Development.json
+
+# PDF/statement test files
+AccountData/*/Inbox/*.pdf
+AccountData/*/Processed/*.pdf
+AccountData/*/Failed/*.pdf
+
+# Ignore generated JSON results
+BankStatementParsing.TestConsole/parsed_statement_*.json 
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Core.dll
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Core.pdb
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Infrastructure.dll
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Infrastructure.pdb
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Core.dll
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Core.pdb
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Infrastructure.dll
+BankStatementParsing.Infrastructure/bin/Debug/net9.0/BankStatementParsing.Infrastructure.pdb
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/BankStatementParsing.Infrastructure.AssemblyInfo.cs
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/BankStatementParsing.Infrastructure.AssemblyInfoInputs.cache
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/BankStatementParsing.Infrastructure.csproj.AssemblyReference.cache
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/BankStatementParsing.Infrastructure.dll
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/BankStatementParsing.Infrastructure.pdb
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/ref/BankStatementParsing.Infrastructure.dll
+BankStatementParsing.Infrastructure/obj/Debug/net9.0/refint/BankStatementParsing.Infrastructure.dll
