@@ -100,8 +100,12 @@ public class BankStatementParsingService
         var parser = FindParser(fileName, bankName);
         if (parser == null)
         {
-            var supportedBanks = string.Join(", ", _parsers.Select(p => p.SupportedBankName));
-            throw new NotSupportedException($"No parser found for bank '{bankName}'. Supported banks: {supportedBanks}");
+            var supportedBanks = new List<string>(_parsers.Select(p => p.SupportedBankName));
+            if (_jsonParser != null)
+            {
+                supportedBanks.Add("JSON-driven parsers (loaded from definitions)");
+            }
+            throw new NotSupportedException($"No parser found for bank '{bankName}'. Supported banks: {string.Join(", ", supportedBanks)}");
         }
 
         _logger.LogInformation("Using parser for bank: {SupportedBank}", parser.SupportedBankName);

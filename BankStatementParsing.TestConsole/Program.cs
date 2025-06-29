@@ -37,7 +37,7 @@ namespace BankStatementParsing.TestConsole
             _serviceProvider = serviceProvider;
         }
 
-        public async Task RunAsync(bool force)
+        public async Task ExtractTextFromPdfsAsync(bool force)
         {
             var pdfFiles = new List<string>();
             
@@ -78,7 +78,6 @@ namespace BankStatementParsing.TestConsole
                 return;
             }
             _logger.LogInformation("Found {Count} PDF files.", pdfFiles.Count);
-            int totalImported = 0;
             int totalProcessed = 0;
             foreach (var pdfPath in pdfFiles)
             {
@@ -88,7 +87,7 @@ namespace BankStatementParsing.TestConsole
                     _logger.LogInformation("Skipping {File} (TXT exists)", Path.GetFileName(pdfPath));
                     continue;
                 }
-                _logger.LogInformation("Processing {File}...", Path.GetFileName(pdfPath));
+                _logger.LogInformation("Extracting text from {File}...", Path.GetFileName(pdfPath));
                 try
                 {
                     // Extract text from PDF and write to .txt file
@@ -96,11 +95,62 @@ namespace BankStatementParsing.TestConsole
                     {
                         var text = ExtractTextFromPdf(fileStream);
                         File.WriteAllText(txtPath, text);
-                        fileStream.Position = 0;
                     }
+                    totalProcessed++;
+                    _logger.LogInformation("Extracted text to {File}", Path.GetFileName(txtPath));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error extracting text from {File}", pdfPath);
+                }
+            }
+            _logger.LogInformation("Processed {Count} PDFs. Extracted text to TXT files.", totalProcessed);
+        }
+
+        public async Task ParseTxtFilesAsync(bool force)
+        {
+            var txtFiles = new List<string>();
+            
+            // Find solution root by looking for .sln file
+            var currentDir = Directory.GetCurrentDirectory();
+            var solutionDir = currentDir;
+            
+            // Navigate up from bin/Debug/net9.0 to find the solution root
+            for (int i = 0; i < 5 && solutionDir != null; i++)
+            {
+                if (File.Exists(Path.Combine(solutionDir, "BankStatementParsing.sln")))
+                    break;
+                solutionDir = Path.GetDirectoryName(solutionDir);
+            }
+            
+            if (solutionDir != null)
+            {
+                var accountDataDir = Path.Combine(solutionDir, "AccountData");
+                if (Directory.Exists(accountDataDir))
+                {
+                    var found = Directory.GetFiles(accountDataDir, "*.txt", SearchOption.AllDirectories);
+                    txtFiles.AddRange(found);
+                }
+            }
+            
+            if (txtFiles.Count == 0)
+            {
+                _logger.LogWarning("No TXT files found in AccountData.");
+                return;
+            }
+            
+            _logger.LogInformation("Found {Count} TXT files.", txtFiles.Count);
+            int totalImported = 0;
+            int totalProcessed = 0;
+            
+            foreach (var txtPath in txtFiles)
+            {
+                _logger.LogInformation("Parsing {File}...", Path.GetFileName(txtPath));
+                try
+                {
                     // Use the .txt file for parsing
                     string statementText = File.ReadAllText(txtPath);
-                    var fileName = Path.GetFileName(pdfPath);
+                    var fileName = Path.GetFileName(txtPath);
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var importService = scope.ServiceProvider.GetRequiredService<BankStatementImportService>();
@@ -124,22 +174,32 @@ namespace BankStatementParsing.TestConsole
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error processing {File}", pdfPath);
+                    _logger.LogError(ex, "Error parsing {File}", txtPath);
                 }
             }
-            _logger.LogInformation("Processed {Count} PDFs. Imported {Total} transactions in total.", totalProcessed, totalImported);
+            _logger.LogInformation("Processed {Count} TXT files. Imported {Total} transactions in total.", totalProcessed, totalImported);
         }
 
         private string ExtractTextFromPdf(Stream fileStream)
         {
-            // Use PdfPig to extract text from all pages
+            // Use PdfPig to extract text from all pages with proper line preservation
             fileStream.Position = 0;
             using var document = PdfDocument.Open(fileStream);
             var sb = new System.Text.StringBuilder();
             for (int pageNum = 1; pageNum <= document.NumberOfPages; pageNum++)
             {
                 var page = document.GetPage(pageNum);
-                sb.AppendLine(page.Text);
+                // Group words by Y position (line) to preserve line structure
+                var words = page.GetWords().ToList();
+                var lines = words
+                    .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 1))
+                    .OrderByDescending(g => g.Key) // PDF Y=0 is bottom, so descending
+                    .ToList();
+                foreach (var line in lines)
+                {
+                    sb.AppendLine(string.Join(" ", line.OrderBy(w => w.BoundingBox.Left).Select(w => w.Text)));
+                }
+                sb.AppendLine(); // Extra newline between pages
             }
             fileStream.Position = 0;
             return sb.ToString();
@@ -176,8 +236,9 @@ namespace BankStatementParsing.TestConsole
             Console.WriteLine("1. Continue without deleting or parsing (default)");
             Console.WriteLine("2. Delete all EXCEPT Merchants (Places), Tags, and their join table");
             Console.WriteLine("3. Delete ALL data (irreversible)");
-            Console.WriteLine("4. Parse/import data from PDFs (batch parser)");
-            Console.Write("Enter your choice (1/2/3/4): ");
+            Console.WriteLine("4. Extract text from PDFs to TXT files");
+            Console.WriteLine("5. Parse TXT files and import to database");
+            Console.Write("Enter your choice (1/2/3/4/5): ");
             var choice = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(choice)) choice = "1";
 
@@ -203,11 +264,17 @@ namespace BankStatementParsing.TestConsole
             {
                 var force = args.Contains("--force");
                 var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
-                await batchService.RunAsync(force);
+                await batchService.ExtractTextFromPdfsAsync(force);
+            }
+            else if (choice == "5")
+            {
+                var force = args.Contains("--force");
+                var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
+                await batchService.ParseTxtFilesAsync(force);
             }
             else
             {
-                Console.WriteLine("[INFO] Batch parsing not run.");
+                Console.WriteLine("[INFO] No processing selected.");
             }
         }
 

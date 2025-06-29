@@ -17,7 +17,8 @@ var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..",
 var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");
 var connectionString = $"Data Source={absoluteDbPath};Mode=ReadOnly";
 builder.Services.AddDbContext<BankStatementParsingContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlite(connectionString)
+    .LogTo(message => { }, LogLevel.Warning)); // Disable SQL command logging
 
 // Log the connection string and absolute path at startup
 Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");

@@ -63,72 +63,39 @@ namespace BankStatementParsing.Services.Parsers
         private List<TransactionData> ParseTransactions(TransactionDefinition def, string text)
         {
             var transactions = new List<TransactionData>();
+            var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             var mainRegex = new Regex(def.MainPattern.Trim(), RegexOptions.Compiled | RegexOptions.IgnoreCase);
             
-            var matches = mainRegex.Matches(text);
-            
-            foreach (Match match in matches)
+            foreach (var line in lines)
             {
-                var current = new TransactionData();
+                var trimmedLine = line.Trim();
+                var match = mainRegex.Match(trimmedLine);
                 
-                // Extract main transaction fields
-                foreach (var field in def.Fields)
+                if (match.Success)
                 {
-                    var value = match.Groups.Count > field.Value ? match.Groups[field.Value].Value.Trim() : null;
-                    switch (field.Key)
+                    var current = new TransactionData();
+                    
+                    // Extract main transaction fields
+                    foreach (var field in def.Fields)
                     {
-                        case "date":
-                            current.Date = ParseDate(value);
-                            break;
-                        case "description":
-                            current.Description = value;
-                            break;
-                        case "amount":
-                            current.Amount = ParseAmount(value);
-                            break;
-                    }
-                }
-                
-                // Look for detail patterns after this match
-                var matchEnd = match.Index + match.Length;
-                var nextMatchStart = text.Length;
-                
-                // Find the start of the next transaction to limit search scope
-                var nextMatch = mainRegex.Match(text, matchEnd);
-                if (nextMatch.Success)
-                    nextMatchStart = nextMatch.Index;
-                
-                var detailText = text.Substring(matchEnd, nextMatchStart - matchEnd);
-                
-                // Extract detail fields
-                foreach (var detail in def.Details)
-                {
-                    var detailRegex = new Regex(detail.Pattern);
-                    var detailMatch = detailRegex.Match(detailText);
-                    if (detailMatch.Success)
-                    {
-                        var detailValue = detailMatch.Groups.Count > 1 ? detailMatch.Groups[1].Value.Trim() : null;
-                        switch (detail.Field)
+                        var value = match.Groups.Count > field.Value ? match.Groups[field.Value].Value.Trim() : null;
+                        switch (field.Key)
                         {
-                            case "reference":
-                                current.Reference = detailValue;
+                            case "date":
+                                current.Date = ParseDate(value);
                                 break;
-                            case "merchant":
-                                current.MerchantName = detailValue;
+                            case "description":
+                                current.Description = value;
                                 break;
-                            case "originalAmount":
-                                current.Countervalue = ParseAmount(detailValue);
-                                break;
-                            case "exchangeRate":
-                                current.ExchangeRate = ParseAmount(detailValue);
+                            case "amount":
+                                current.Amount = ParseAmount(value);
                                 break;
                         }
                     }
+                    
+                    transactions.Add(current);
                 }
-                
-                transactions.Add(current);
             }
-            
             return transactions;
         }
 
