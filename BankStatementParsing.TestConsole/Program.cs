@@ -213,7 +213,11 @@ namespace BankStatementParsing.TestConsole
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddLogging(cfg => cfg.AddConsole().SetMinimumLevel(LogLevel.Information));
+                    services.AddLogging(cfg => {
+                        cfg.AddConsole();
+                        cfg.SetMinimumLevel(LogLevel.Warning);
+                        cfg.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+                    });
                     // Compute absolute path to the shared database
                     var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
                     var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");

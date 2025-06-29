@@ -105,11 +105,12 @@ namespace BankStatementParsing.Services.Parsers
                         // Check each detail pattern
                         foreach (var detail in def.Details)
                         {
-                            var detailRegex = new Regex(detail.Pattern);
+                            var detailRegex = new Regex(detail.Pattern, RegexOptions.IgnoreCase);
                             var detailMatch = detailRegex.Match(detailLine);
                             if (detailMatch.Success)
                             {
                                 var detailValue = detailMatch.Groups.Count > 1 ? detailMatch.Groups[1].Value.Trim() : null;
+                                Console.WriteLine($"Matched {detail.Field}: {detailValue} on line: {detailLine}");
                                 switch (detail.Field)
                                 {
                                     case "reference":
@@ -125,6 +126,10 @@ namespace BankStatementParsing.Services.Parsers
                                         current.ExchangeRate = ParseAmount(detailValue);
                                         break;
                                 }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"No match for {detail.Field} with pattern {detail.Pattern} on line: {detailLine}");
                             }
                         }
                     }
