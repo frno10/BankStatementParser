@@ -64,7 +64,10 @@ public class BankStatementParsingContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var dbPath = System.IO.Path.Combine("..", "Database", "bankstatements.db");
+            var dbDir = System.IO.Path.Combine("Database");
+            if (!System.IO.Directory.Exists(dbDir))
+                System.IO.Directory.CreateDirectory(dbDir);
+            var dbPath = System.IO.Path.Combine(dbDir, "bankstatements.db");
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }

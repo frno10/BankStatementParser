@@ -13,14 +13,14 @@ public class TestPdfParser
         using var loggerFactory = LoggerFactory.Create(builder =>
             builder.AddConsole().SetMinimumLevel(LogLevel.Debug));
         
-        var parserLogger = loggerFactory.CreateLogger<MskbPdfParser>();
+        var parserLogger = loggerFactory.CreateLogger<PdfStatementParser>();
         var serviceLogger = loggerFactory.CreateLogger<BankStatementParsingService>();
 
         try
         {
             // Create the parser
-            var mskbParser = new MskbPdfParser(parserLogger);
-            var parsers = new[] { mskbParser };
+            var pdfParser = new PdfStatementParser(parserLogger);
+            var parsers = new[] { pdfParser };
             var parsingService = new BankStatementParsingService(parsers, serviceLogger);
 
             // Path to the PDF file

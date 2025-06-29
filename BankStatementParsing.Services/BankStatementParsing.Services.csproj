@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BankStatementParsing.Core\BankStatementParsing.Core.csproj" />
+    <ProjectReference Include="..\BankStatementParsing.Infrastructure\BankStatementParsing.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

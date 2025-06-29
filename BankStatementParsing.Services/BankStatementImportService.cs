@@ -60,7 +60,7 @@ public class BankStatementImportService
             if (exists)
                 continue;
 
-            var entity = new Transaction
+            var entity = new BankStatementParsing.Infrastructure.Transaction
             {
                 StatementId = statement.Id,
                 Date = t.Date,

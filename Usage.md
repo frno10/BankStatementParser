@@ -17,10 +17,14 @@ dotnet run --project BankStatementParsing.TestConsole
 This will parse and import **all** PDFs, regardless of whether a `.txt` file exists:
 
 ```sh
+dotnet run --project BankStatementParsing.TestConsole --force
+```
+Or, you can use the universal .NET CLI pattern:
+```sh
 dotnet run --project BankStatementParsing.TestConsole -- --force
 ```
-
-- The `--force` flag can be placed after `--` to ensure it is passed to your application.
+- The first `--` tells the .NET CLI to stop parsing options for itself and pass everything after it directly to your application. This is only needed if your argument could be confused with a .NET CLI option.
+- For the `--force` flag, both forms work. Use whichever you prefer.
 
 ## Duplicate Prevention
 

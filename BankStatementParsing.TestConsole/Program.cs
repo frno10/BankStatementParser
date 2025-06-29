@@ -1,6 +1,8 @@
 ﻿using BankStatementParsing.Services;
 using BankStatementParsing.Services.Parsers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using System;
 using System.IO;
@@ -11,27 +13,55 @@ using System.Collections.Generic;
 
 namespace BankStatementParsing.TestConsole
 {
-    class Program
+    public class BatchImportService
     {
-        static async Task Main(string[] args)
+        private readonly ILogger<BatchImportService> _logger;
+        private readonly PdfStatementParser _pdfParser;
+        private readonly BankStatementParsingService _parsingService;
+        private readonly BankStatementImportService _importService;
+        private readonly IServiceProvider _serviceProvider;
+
+        public BatchImportService(
+            ILogger<BatchImportService> logger,
+            PdfStatementParser pdfParser,
+            BankStatementParsingService parsingService,
+            BankStatementImportService importService,
+            IServiceProvider serviceProvider)
         {
-            bool force = args.Contains("--force");
+            _logger = logger;
+            _pdfParser = pdfParser;
+            _parsingService = parsingService;
+            _importService = importService;
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task RunAsync(bool force)
+        {
             var pdfFiles = new List<string>();
-            var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory())?.FullName;
+            var solutionDir = Directory.GetCurrentDirectory();
+            Console.WriteLine($"[DEBUG] Current Directory: {solutionDir}");
             if (solutionDir != null)
             {
                 var accountDataDir = Path.Combine(solutionDir, "AccountData");
+                Console.WriteLine($"[DEBUG] Resolved AccountData Dir: {accountDataDir}");
                 if (Directory.Exists(accountDataDir))
                 {
-                    pdfFiles.AddRange(Directory.GetFiles(accountDataDir, "*.pdf", SearchOption.AllDirectories));
+                    var found = Directory.GetFiles(accountDataDir, "*.pdf", SearchOption.AllDirectories);
+                    Console.WriteLine($"[DEBUG] Found {found.Length} PDF(s):");
+                    foreach (var f in found) Console.WriteLine($"  [DEBUG] {f}");
+                    pdfFiles.AddRange(found);
+                }
+                else
+                {
+                    Console.WriteLine($"[DEBUG] AccountData directory does not exist at: {accountDataDir}");
                 }
             }
             if (pdfFiles.Count == 0)
             {
-                Console.WriteLine("No PDF files found in AccountData.");
+                _logger.LogWarning("No PDF files found in AccountData.");
                 return;
             }
-            Console.WriteLine($"Found {pdfFiles.Count} PDF files.");
+            _logger.LogInformation("Found {Count} PDF files.", pdfFiles.Count);
             int totalImported = 0;
             int totalProcessed = 0;
             foreach (var pdfPath in pdfFiles)
@@ -39,35 +69,56 @@ namespace BankStatementParsing.TestConsole
                 var txtPath = Path.ChangeExtension(pdfPath, ".txt");
                 if (!force && File.Exists(txtPath))
                 {
-                    Console.WriteLine($"Skipping {Path.GetFileName(pdfPath)} (TXT exists)");
+                    _logger.LogInformation("Skipping {File} (TXT exists)", Path.GetFileName(pdfPath));
                     continue;
                 }
-                Console.WriteLine($"Processing {Path.GetFileName(pdfPath)}...");
+                _logger.LogInformation("Processing {File}...", Path.GetFileName(pdfPath));
                 try
                 {
                     using var fileStream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
                     var fileName = Path.GetFileName(pdfPath);
-                    var pdfParser = new PdfStatementParser(parserLogger);
-                    var parsers = new[] { pdfParser };
-                    var parsingService = new BankStatementParsingService(parsers, serviceLogger);
-                    var result = await parsingService.ParseStatementAsync(fileStream, fileName, "Bank");
-                    using (var db = new BankStatementParsingContext())
+                    var result = await _parsingService.ParseStatementAsync(fileStream, fileName, "Bank");
+                    // Use a new scope for DbContext per import
+                    using (var scope = _serviceProvider.CreateScope())
                     {
-                        var importService = new BankStatementImportService(db, importLogger);
+                        var importService = scope.ServiceProvider.GetRequiredService<BankStatementImportService>();
                         var importedCount = importService.ImportStatement(result);
                         totalImported += importedCount;
                         totalProcessed++;
-                        Console.WriteLine($"Imported {importedCount} transactions from {fileName}.");
+                        _logger.LogInformation("Imported {Count} transactions from {File}.", importedCount, fileName);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Error processing {pdfPath}: {ex.Message}");
+                    _logger.LogError(ex, "Error processing {File}", pdfPath);
                 }
             }
-            Console.WriteLine($"\nProcessed {totalProcessed} PDFs. Imported {totalImported} transactions in total.");
-            Console.WriteLine("\nPress any key to exit...");
-            Console.ReadKey();
+            _logger.LogInformation("Processed {Count} PDFs. Imported {Total} transactions in total.", totalProcessed, totalImported);
+        }
+    }
+
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddLogging(cfg => cfg.AddConsole().SetMinimumLevel(LogLevel.Information));
+                    services.AddDbContext<BankStatementParsingContext>();
+                    services.AddTransient<PdfStatementParser>();
+                    services.AddTransient<BankStatementParsingService>(sp =>
+                        new BankStatementParsingService(new[] { sp.GetRequiredService<PdfStatementParser>() },
+                            sp.GetRequiredService<ILogger<BankStatementParsingService>>()));
+                    services.AddTransient<BankStatementImportService>();
+                    services.AddTransient<BatchImportService>();
+                })
+                .Build();
+
+            var force = args.Contains("--force");
+            using var scope = host.Services.CreateScope();
+            var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
+            await batchService.RunAsync(force);
         }
     }
 }
