@@ -2,9 +2,7 @@ using BankStatementParsing.Core.Models;
 using BankStatementParsing.Core.Enums;
 using Microsoft.Extensions.Logging;
 using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
 using System.Text.RegularExpressions;
-using System.Globalization;
 
 namespace BankStatementParsing.Services.Parsers;
 
