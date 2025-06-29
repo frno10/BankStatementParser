@@ -1,0 +1,15 @@
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\bin\Debug\net9.0\BankStatementParsing.Infrastructure.deps.json
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\bin\Debug\net9.0\BankStatementParsing.Infrastructure.dll
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\bin\Debug\net9.0\BankStatementParsing.Infrastructure.pdb
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\bin\Debug\net9.0\BankStatementParsing.Core.dll
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\bin\Debug\net9.0\BankStatementParsing.Core.pdb
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.csproj.AssemblyReference.cache
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.AssemblyInfoInputs.cache
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.AssemblyInfo.cs
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStat.55A8B38A.Up2Date
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.dll
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\refint\BankStatementParsing.Infrastructure.dll
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\BankStatementParsing.Infrastructure.pdb
+C:\Dev\BankStatementParsing\BankStatementParsing.Infrastructure\obj\Debug\net9.0\ref\BankStatementParsing.Infrastructure.dll
