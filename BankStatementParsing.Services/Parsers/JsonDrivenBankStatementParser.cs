@@ -66,9 +66,9 @@ namespace BankStatementParsing.Services.Parsers
             var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             var mainRegex = new Regex(def.MainPattern.Trim(), RegexOptions.Compiled | RegexOptions.IgnoreCase);
             
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
-                var trimmedLine = line.Trim();
+                var trimmedLine = lines[i].Trim();
                 var match = mainRegex.Match(trimmedLine);
                 
                 if (match.Success)
@@ -90,6 +90,42 @@ namespace BankStatementParsing.Services.Parsers
                             case "amount":
                                 current.Amount = ParseAmount(value);
                                 break;
+                        }
+                    }
+                    
+                    // Look for detail patterns in the following lines
+                    for (int j = i + 1; j < lines.Length; j++)
+                    {
+                        var detailLine = lines[j].Trim();
+                        
+                        // Stop if we hit another transaction or an empty line
+                        if (string.IsNullOrEmpty(detailLine) || mainRegex.IsMatch(detailLine))
+                            break;
+                        
+                        // Check each detail pattern
+                        foreach (var detail in def.Details)
+                        {
+                            var detailRegex = new Regex(detail.Pattern);
+                            var detailMatch = detailRegex.Match(detailLine);
+                            if (detailMatch.Success)
+                            {
+                                var detailValue = detailMatch.Groups.Count > 1 ? detailMatch.Groups[1].Value.Trim() : null;
+                                switch (detail.Field)
+                                {
+                                    case "reference":
+                                        current.Reference = detailValue;
+                                        break;
+                                    case "merchant":
+                                        current.MerchantName = detailValue;
+                                        break;
+                                    case "originalAmount":
+                                        current.Countervalue = ParseAmount(detailValue);
+                                        break;
+                                    case "exchangeRate":
+                                        current.ExchangeRate = ParseAmount(detailValue);
+                                        break;
+                                }
+                            }
                         }
                     }
                     
