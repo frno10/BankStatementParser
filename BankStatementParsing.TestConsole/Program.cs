@@ -123,10 +123,58 @@ namespace BankStatementParsing.TestConsole
                 })
                 .Build();
 
-            var force = args.Contains("--force");
+            // Prompt for DB clear options
+            Console.WriteLine("Choose an option:");
+            Console.WriteLine("1. Delete ALL data (irreversible)");
+            Console.WriteLine("2. Delete all EXCEPT Merchants (Places), Tags, and their join table");
+            Console.WriteLine("3. Continue without deleting");
+            Console.Write("Enter your choice (1/2/3): ");
+            var choice = Console.ReadLine();
+
             using var scope = host.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<BankStatementParsingContext>();
+
+            if (choice == "1")
+            {
+                await ClearAllDataAsync(db);
+                Console.WriteLine("[INFO] All data deleted.");
+            }
+            else if (choice == "2")
+            {
+                await ClearAllExceptMerchantsAndTagsAsync(db);
+                Console.WriteLine("[INFO] All data except Merchants, Tags, and their join table deleted.");
+            }
+            else
+            {
+                Console.WriteLine("[INFO] No data deleted.");
+            }
+
+            var force = args.Contains("--force");
             var batchService = scope.ServiceProvider.GetRequiredService<BatchImportService>();
             await batchService.RunAsync(force);
+        }
+
+        private static async Task ClearAllDataAsync(BankStatementParsingContext db)
+        {
+            // Remove join tables first due to FK constraints
+            db.TransactionTags.RemoveRange(db.TransactionTags);
+            db.MerchantTags.RemoveRange(db.MerchantTags);
+            db.Transactions.RemoveRange(db.Transactions);
+            db.Statements.RemoveRange(db.Statements);
+            db.Accounts.RemoveRange(db.Accounts);
+            db.Merchants.RemoveRange(db.Merchants);
+            db.Tags.RemoveRange(db.Tags);
+            await db.SaveChangesAsync();
+        }
+
+        private static async Task ClearAllExceptMerchantsAndTagsAsync(BankStatementParsingContext db)
+        {
+            // Remove join tables and all except Merchants, Tags, and their join table
+            db.TransactionTags.RemoveRange(db.TransactionTags);
+            db.Transactions.RemoveRange(db.Transactions);
+            db.Statements.RemoveRange(db.Statements);
+            db.Accounts.RemoveRange(db.Accounts);
+            await db.SaveChangesAsync();
         }
     }
 }

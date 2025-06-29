@@ -101,9 +101,13 @@ public class DashboardController : Controller
 
     private async Task<List<TopMerchant>> GetTopMerchants()
     {
-        return await _context.Merchants
+        var merchants = await _context.Merchants
             .Include(m => m.MerchantTags)
                 .ThenInclude(mt => mt.Tag)
+            .Include(m => m.Transactions)
+            .ToListAsync();
+
+        return merchants
             .Select(m => new TopMerchant
             {
                 MerchantId = m.Id,
@@ -114,7 +118,7 @@ public class DashboardController : Controller
             })
             .OrderByDescending(m => m.TotalAmount)
             .Take(10)
-            .ToListAsync();
+            .ToList();
     }
 
     private async Task<List<TransactionCategorySummary>> GetCategoryBreakdown()

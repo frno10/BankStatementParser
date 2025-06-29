@@ -1,5 +1,36 @@
 # Bank Statement Parsing – Usage Guide
 
+## Clearing All Database Data
+
+You can clear the database using the console app before importing or testing new data. When you run the console app, you will be prompted with options:
+
+- **Delete ALL data (irreversible):**
+  - Removes everything from the database, including merchants (places), tags, and all join tables.
+- **Delete all EXCEPT Merchants (Places), Tags, and their join table:**
+  - Removes all transactional/account/accounting data, but keeps merchants, tags, and their relationships.
+- **Continue without deleting:**
+  - Leaves all data intact.
+
+### How to Use
+
+Run the following command:
+
+```sh
+dotnet run --project BankStatementParsing.TestConsole
+```
+
+You will see a prompt:
+
+```
+Choose an option:
+1. Delete ALL data (irreversible)
+2. Delete all EXCEPT Merchants (Places), Tags, and their join table
+3. Continue without deleting
+Enter your choice (1/2/3):
+```
+
+Enter the number for your desired action and press Enter. The app will then proceed with the batch import as usual.
+
 ## Running the Batch Parser
 
 The batch parser will scan all PDF files in the `AccountData/**/Inbox/` folders and import transactions into the database.
