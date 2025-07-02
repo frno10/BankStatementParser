@@ -99,161 +99,157 @@ public class PdfStatementParser : BaseBankStatementParser
 
     private async Task ParseAccountInformation(BankStatementData statementData, string text)
     {
-        await Task.Run(() =>
+        // Extract account number
+        statementData.AccountNumber = ExtractAccountNumber(text);
+        
+        // Extract account holder name - look for common patterns
+        var namePatterns = new[]
         {
-            // Extract account number
-            statementData.AccountNumber = ExtractAccountNumber(text);
-            
-            // Extract account holder name - look for common patterns
-            var namePatterns = new[]
-            {
-                @"Владелец\s*счета[:\s]*([^\n\r]+)",
-                @"Account\s*holder[:\s]*([^\n\r]+)",
-                @"Клиент[:\s]*([^\n\r]+)",
-                @"ФИО[:\s]*([^\n\r]+)"
-            };
+            @"Владелец\s*счета[:\s]*([^\n\r]+)",
+            @"Account\s*holder[:\s]*([^\n\r]+)",
+            @"Клиент[:\s]*([^\n\r]+)",
+            @"ФИО[:\s]*([^\n\r]+)"
+        };
 
-            foreach (var pattern in namePatterns)
+        foreach (var pattern in namePatterns)
+        {
+            var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+            if (match.Success && match.Groups.Count > 1)
             {
-                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-                if (match.Success && match.Groups.Count > 1)
-                {
-                    statementData.AccountHolderName = match.Groups[1].Value.Trim();
-                    break;
-                }
+                statementData.AccountHolderName = match.Groups[1].Value.Trim();
+                break;
             }
+        }
 
-            _logger.LogDebug("Parsed account info - Number: {AccountNumber}, Holder: {Holder}", 
-                statementData.AccountNumber, statementData.AccountHolderName);
-        });
+        _logger.LogDebug("Parsed account info - Number: {AccountNumber}, Holder: {Holder}", 
+            statementData.AccountNumber, statementData.AccountHolderName);
     }
 
     private async Task ParseStatementPeriod(BankStatementData statementData, string text)
     {
-        await Task.Run(() =>
+        // Look for period patterns
+        var periodPatterns = new[]
         {
-            // Look for period patterns
-            var periodPatterns = new[]
-            {
-                @"период\s*с\s*(\d{2}\.\d{2}\.\d{4})\s*по\s*(\d{2}\.\d{2}\.\d{4})",
-                @"period\s*from\s*(\d{2}\.\d{2}\.\d{4})\s*to\s*(\d{2}\.\d{2}\.\d{4})",
-                @"за\s*период\s*(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})",
-                @"(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})"
-            };
+            @"период\s*с\s*(\d{2}\.\d{2}\.\d{4})\s*по\s*(\d{2}\.\d{2}\.\d{4})",
+            @"period\s*from\s*(\d{2}\.\d{2}\.\d{4})\s*to\s*(\d{2}\.\d{2}\.\d{4})",
+            @"за\s*период\s*(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})",
+            @"(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})"
+        };
 
-            foreach (var pattern in periodPatterns)
+        foreach (var pattern in periodPatterns)
+        {
+            var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+            if (match.Success && match.Groups.Count > 2)
             {
-                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-                if (match.Success && match.Groups.Count > 2)
-                {
-                    statementData.StatementPeriodStart = ParseDate(match.Groups[1].Value);
-                    statementData.StatementPeriodEnd = ParseDate(match.Groups[2].Value);
-                    break;
-                }
+                statementData.StatementPeriodStart = ParseDate(match.Groups[1].Value);
+                statementData.StatementPeriodEnd = ParseDate(match.Groups[2].Value);
+                break;
             }
+        }
 
-            _logger.LogDebug("Parsed period - Start: {Start}, End: {End}", 
-                statementData.StatementPeriodStart, statementData.StatementPeriodEnd);
-        });
+        _logger.LogDebug("Parsed period - Start: {Start}, End: {End}", 
+            statementData.StatementPeriodStart, statementData.StatementPeriodEnd);
     }
 
     private async Task ParseBalances(BankStatementData statementData, string text)
     {
-        await Task.Run(() =>
+        // Look for balance patterns
+        var openingBalancePatterns = new[]
         {
-            // Look for balance patterns
-            var openingBalancePatterns = new[]
-            {
-                @"остаток\s*на\s*начало[:\s]*([0-9\s,.-]+)",
-                @"opening\s*balance[:\s]*([0-9\s,.-]+)",
-                @"входящий\s*остаток[:\s]*([0-9\s,.-]+)",
-                @"сальдо\s*на\s*начало[:\s]*([0-9\s,.-]+)"
-            };
+            @"остаток\s*на\s*начало[:\s]*([0-9\s,.-]+)",
+            @"opening\s*balance[:\s]*([0-9\s,.-]+)",
+            @"входящий\s*остаток[:\s]*([0-9\s,.-]+)",
+            @"сальдо\s*на\s*начало[:\s]*([0-9\s,.-]+)"
+        };
 
-            var closingBalancePatterns = new[]
-            {
-                @"остаток\s*на\s*конец[:\s]*([0-9\s,.-]+)",
-                @"closing\s*balance[:\s]*([0-9\s,.-]+)",
-                @"исходящий\s*остаток[:\s]*([0-9\s,.-]+)",
-                @"сальдо\s*на\s*конец[:\s]*([0-9\s,.-]+)"
-            };
+        var closingBalancePatterns = new[]
+        {
+            @"остаток\s*на\s*конец[:\s]*([0-9\s,.-]+)",
+            @"closing\s*balance[:\s]*([0-9\s,.-]+)",
+            @"исходящий\s*остаток[:\s]*([0-9\s,.-]+)",
+            @"сальдо\s*на\s*конец[:\s]*([0-9\s,.-]+)"
+        };
 
-            foreach (var pattern in openingBalancePatterns)
+        foreach (var pattern in openingBalancePatterns)
+        {
+            var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+            if (match.Success && match.Groups.Count > 1)
             {
-                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-                if (match.Success && match.Groups.Count > 1)
-                {
-                    statementData.OpeningBalance = ParseAmount(match.Groups[1].Value);
-                    break;
-                }
+                statementData.OpeningBalance = ParseAmount(match.Groups[1].Value);
+                break;
             }
+        }
 
-            foreach (var pattern in closingBalancePatterns)
+        foreach (var pattern in closingBalancePatterns)
+        {
+            var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+            if (match.Success && match.Groups.Count > 1)
             {
-                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-                if (match.Success && match.Groups.Count > 1)
-                {
-                    statementData.ClosingBalance = ParseAmount(match.Groups[1].Value);
-                    break;
-                }
+                statementData.ClosingBalance = ParseAmount(match.Groups[1].Value);
+                break;
             }
+        }
 
-            _logger.LogDebug("Parsed balances - Opening: {Opening}, Closing: {Closing}", 
-                statementData.OpeningBalance, statementData.ClosingBalance);
-        });
+        _logger.LogDebug("Parsed balances - Opening: {Opening}, Closing: {Closing}", 
+            statementData.OpeningBalance, statementData.ClosingBalance);
     }
 
     private async Task<List<TransactionData>> ParseTransactions(string text)
     {
-        return await Task.Run(() =>
+        var transactions = new List<TransactionData>();
+        
+        // Split text into lines for transaction parsing
+        var lines = text.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        
+        // Look for transaction patterns - this may need to be adjusted based on actual MSKB format
+        var transactionPattern = @"(\d{2}\.\d{2}\.\d{4})\s+([^0-9-]+)\s+([-]?[0-9\s,.-]+)";
+        
+        for (int i = 0; i < lines.Length; i++)
         {
-            var transactions = new List<TransactionData>();
-            
-            // Split text into lines for transaction parsing
-            var lines = text.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-            
-            // Look for transaction patterns - this may need to be adjusted based on actual MSKB format
-            var transactionPattern = @"(\d{2}\.\d{2}\.\d{4})\s+([^0-9-]+)\s+([-]?[0-9\s,.-]+)";
-            
-            for (int i = 0; i < lines.Length; i++)
+            var line = lines[i].Trim();
+            if (string.IsNullOrEmpty(line)) continue;
+
+            var match = Regex.Match(line, transactionPattern);
+            if (match.Success && match.Groups.Count > 3)
             {
-                var line = lines[i].Trim();
-                if (string.IsNullOrEmpty(line)) continue;
-
-                var match = Regex.Match(line, transactionPattern);
-                if (match.Success && match.Groups.Count > 3)
+                try
                 {
-                    try
+                    var transaction = new TransactionData
                     {
-                        var transaction = new TransactionData
-                        {
-                            Date = ParseDate(match.Groups[1].Value),
-                            Description = match.Groups[2].Value.Trim(),
-                            Amount = ParseAmount(match.Groups[3].Value)
-                        };
+                        Date = ParseDate(match.Groups[1].Value),
+                        Description = match.Groups[2].Value.Trim(),
+                        Amount = ParseAmount(match.Groups[3].Value)
+                    };
 
-                        transaction.Type = DetermineTransactionType(transaction.Amount, transaction.Description);
-                        
-                        // Make amount absolute for debit transactions
-                        if (transaction.Type == TransactionType.Debit && transaction.Amount > 0)
-                        {
-                            transaction.Amount = -transaction.Amount;
-                        }
-
-                        transactions.Add(transaction);
-
-                        _logger.LogDebug("Parsed transaction: {Date} | {Description} | {Amount}", 
-                            transaction.Date, transaction.Description, transaction.Amount);
-                    }
-                    catch (Exception ex)
+                    // Determine transaction type after amount adjustment
+                    // Make amount negative for debit transactions first if needed
+                    if (transaction.Amount > 0 && ShouldBeDebit(transaction.Description))
                     {
-                        _logger.LogWarning(ex, "Failed to parse transaction line: {Line}", line);
+                        transaction.Amount = -transaction.Amount;
                     }
+
+                    transaction.Type = DetermineTransactionType(transaction.Amount, transaction.Description);
+
+                    transactions.Add(transaction);
+
+                    _logger.LogDebug("Parsed transaction: {Date} | {Description} | {Amount}", 
+                        transaction.Date, transaction.Description, transaction.Amount);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to parse transaction line: {Line}", line);
                 }
             }
+        }
 
-            _logger.LogInformation("Found {Count} transactions", transactions.Count);
-            return transactions;
-        });
+        _logger.LogInformation("Found {Count} transactions", transactions.Count);
+        return transactions;
+    }
+
+    private bool ShouldBeDebit(string description)
+    {
+        // Helper method to determine if a transaction should be a debit based on description
+        var debitKeywords = new[] { "списание", "платеж", "оплата", "комиссия", "снятие", "withdrawal", "payment", "fee" };
+        return debitKeywords.Any(keyword => description.ToLower().Contains(keyword.ToLower()));
     }
 } 
