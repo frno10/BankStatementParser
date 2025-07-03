@@ -26,11 +26,16 @@ public abstract class BaseBankStatementParser : IFileParserService
         if (string.IsNullOrWhiteSpace(amountText))
             return 0;
 
-        // Handle Russian number format (space as thousand separator, comma as decimal)
+        // Handle various currency symbols and formats
         amountText = amountText.Trim()
             .Replace("₽", "")
             .Replace("RUB", "")
-            .Replace("руб", "")
+            .Replace("$", "")
+            .Replace("€", "")
+            .Replace("£", "")
+            .Replace("USD", "")
+            .Replace("EUR", "")
+            .Replace("GBP", "")
             .Replace(".", "")
             .Trim();
 
@@ -56,15 +61,18 @@ public abstract class BaseBankStatementParser : IFileParserService
         if (string.IsNullOrWhiteSpace(dateText))
             return DateTime.MinValue;
 
-        // Common Russian date formats
+        // Common international date formats
         var formats = new[] 
         { 
             "dd.MM.yyyy", 
             "dd/MM/yyyy", 
+            "MM/dd/yyyy",
             "yyyy-MM-dd", 
             "dd-MM-yyyy",
+            "MM-dd-yyyy",
             "dd.MM.yy",
-            "dd/MM/yy"
+            "dd/MM/yy",
+            "MM/dd/yy"
         };
 
         foreach (var format in formats)
@@ -81,13 +89,14 @@ public abstract class BaseBankStatementParser : IFileParserService
 
     protected virtual string ExtractAccountNumber(string text)
     {
-        // Common patterns for Russian bank account numbers
+        // Common patterns for international bank account numbers
         var patterns = new[]
         {
-            @"\b\d{20}\b", // 20-digit account number
-            @"Счет[:\s]*(\d{20})", // "Счет: 12345678901234567890"
-            @"Account[:\s]*(\d{20})", // "Account: 12345678901234567890"
-            @"р/с[:\s]*(\d{20})", // "р/с: 12345678901234567890"
+            @"\b\d{8,20}\b", // 8-20 digit account number (more flexible)
+            @"Account[:\s]*(\d{8,20})", // "Account: 12345678901234567890"
+            @"Acc[:\s]*(\d{8,20})", // "Acc: 12345678"
+            @"A/C[:\s]*(\d{8,20})", // "A/C: 12345678"
+            @"Account\s*Number[:\s]*(\d{8,20})", // "Account Number: 12345678"
         };
 
         foreach (var pattern in patterns)
