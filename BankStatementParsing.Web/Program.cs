@@ -46,3 +46,6 @@ app.MapControllerRoute(
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.Run();
+
+// Make Program class accessible for testing
+public partial class Program { }
