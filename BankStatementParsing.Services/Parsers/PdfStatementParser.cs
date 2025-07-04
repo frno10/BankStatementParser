@@ -14,15 +14,14 @@ public class PdfStatementParser : BaseBankStatementParser
 
     public override bool CanParse(string fileName, string bankName)
     {
-        return Path.GetExtension(fileName).ToLower() == ".pdf" && 
-               (bankName.ToUpper().Contains("MSKB") || fileName.ToUpper().Contains("MSKB"));
+        return Path.GetExtension(fileName).ToLower() == ".pdf";
     }
 
     public override async Task<BankStatementData> ParseAsync(Stream fileStream, string fileName, string bankName)
     {
         try
         {
-            _logger.LogInformation("Starting to parse MSKB PDF: {FileName}", fileName);
+            _logger.LogInformation("Starting to parse PDF: {FileName}", fileName);
 
             // Always resolve the full path to the PDF for text extraction
             string pdfFilePath = fileName;
@@ -52,8 +51,8 @@ public class PdfStatementParser : BaseBankStatementParser
 
             var statementData = new BankStatementData
             {
-                BankName = "Moscow Bank (MSKB)",
-                Currency = "RUB"
+                BankName = "Generic Bank",
+                Currency = "USD" // Default currency, will be detected from document if possible
             };
 
             using var document = PdfDocument.Open(fileStream);
@@ -85,14 +84,14 @@ public class PdfStatementParser : BaseBankStatementParser
             // Parse transactions
             statementData.Transactions = await ParseTransactions(allText);
 
-            _logger.LogInformation("Successfully parsed MSKB statement. Found {TransactionCount} transactions", 
+            _logger.LogInformation("Successfully parsed PDF statement. Found {TransactionCount} transactions", 
                 statementData.Transactions.Count);
 
             return statementData;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to parse MSKB PDF: {FileName}", fileName);
+            _logger.LogError(ex, "Failed to parse PDF: {FileName}", fileName);
             throw;
         }
     }
@@ -104,13 +103,14 @@ public class PdfStatementParser : BaseBankStatementParser
             // Extract account number
             statementData.AccountNumber = ExtractAccountNumber(text);
             
-            // Extract account holder name - look for common patterns
+            // Extract account holder name - look for common English patterns
             var namePatterns = new[]
             {
-                @"Владелец\s*счета[:\s]*([^\n\r]+)",
                 @"Account\s*holder[:\s]*([^\n\r]+)",
-                @"Клиент[:\s]*([^\n\r]+)",
-                @"ФИО[:\s]*([^\n\r]+)"
+                @"Account\s*name[:\s]*([^\n\r]+)",
+                @"Customer[:\s]*([^\n\r]+)",
+                @"Name[:\s]*([^\n\r]+)",
+                @"Client[:\s]*([^\n\r]+)"
             };
 
             foreach (var pattern in namePatterns)
@@ -132,13 +132,13 @@ public class PdfStatementParser : BaseBankStatementParser
     {
         await Task.Run(() =>
         {
-            // Look for period patterns
+            // Look for period patterns in English
             var periodPatterns = new[]
             {
-                @"период\s*с\s*(\d{2}\.\d{2}\.\d{4})\s*по\s*(\d{2}\.\d{2}\.\d{4})",
-                @"period\s*from\s*(\d{2}\.\d{2}\.\d{4})\s*to\s*(\d{2}\.\d{2}\.\d{4})",
-                @"за\s*период\s*(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})",
-                @"(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})"
+                @"period\s*from\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})\s*to\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})",
+                @"statement\s*period[:\s]*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})\s*to\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})",
+                @"from\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})\s*to\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})",
+                @"(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})\s*[-–]\s*(\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4})"
             };
 
             foreach (var pattern in periodPatterns)
@@ -161,21 +161,21 @@ public class PdfStatementParser : BaseBankStatementParser
     {
         await Task.Run(() =>
         {
-            // Look for balance patterns
+            // Look for balance patterns in English
             var openingBalancePatterns = new[]
             {
-                @"остаток\s*на\s*начало[:\s]*([0-9\s,.-]+)",
                 @"opening\s*balance[:\s]*([0-9\s,.-]+)",
-                @"входящий\s*остаток[:\s]*([0-9\s,.-]+)",
-                @"сальдо\s*на\s*начало[:\s]*([0-9\s,.-]+)"
+                @"beginning\s*balance[:\s]*([0-9\s,.-]+)",
+                @"starting\s*balance[:\s]*([0-9\s,.-]+)",
+                @"balance\s*forward[:\s]*([0-9\s,.-]+)"
             };
 
             var closingBalancePatterns = new[]
             {
-                @"остаток\s*на\s*конец[:\s]*([0-9\s,.-]+)",
                 @"closing\s*balance[:\s]*([0-9\s,.-]+)",
-                @"исходящий\s*остаток[:\s]*([0-9\s,.-]+)",
-                @"сальдо\s*на\s*конец[:\s]*([0-9\s,.-]+)"
+                @"ending\s*balance[:\s]*([0-9\s,.-]+)",
+                @"final\s*balance[:\s]*([0-9\s,.-]+)",
+                @"balance\s*carried\s*forward[:\s]*([0-9\s,.-]+)"
             };
 
             foreach (var pattern in openingBalancePatterns)
