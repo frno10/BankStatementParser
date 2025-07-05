@@ -2,16 +2,19 @@ using BankStatementParsing.Core.Models;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace BankStatementParsing.Services.Parsers
 {
     public class JsonDrivenBankStatementParser
     {
         private readonly List<JsonBankParserDefinition> _definitions;
+        private readonly ILogger<JsonDrivenBankStatementParser>? _logger;
 
-        public JsonDrivenBankStatementParser(List<JsonBankParserDefinition> definitions)
+        public JsonDrivenBankStatementParser(List<JsonBankParserDefinition> definitions, ILogger<JsonDrivenBankStatementParser>? logger = null)
         {
             _definitions = definitions;
+            _logger = logger;
         }
 
         public BankStatementData? Parse(string text)
@@ -110,7 +113,7 @@ namespace BankStatementParsing.Services.Parsers
                             if (detailMatch.Success)
                             {
                                 var detailValue = detailMatch.Groups.Count > 1 ? detailMatch.Groups[1].Value.Trim() : null;
-                                Console.WriteLine($"Matched {detail.Field}: {detailValue} on line: {detailLine}");
+                                _logger?.LogDebug("Matched detail field: {Field} with pattern: {Pattern}", detail.Field, detail.Pattern);
                                 switch (detail.Field)
                                 {
                                     case "reference":
@@ -129,7 +132,7 @@ namespace BankStatementParsing.Services.Parsers
                             }
                             else
                             {
-                                Console.WriteLine($"No match for {detail.Field} with pattern {detail.Pattern} on line: {detailLine}");
+                                _logger?.LogDebug("No match for field: {Field} with pattern: {Pattern}", detail.Field, detail.Pattern);
                             }
                         }
                     }

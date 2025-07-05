@@ -10,14 +10,17 @@ public class BankStatementParsingService
 {
     private readonly IEnumerable<IFileParserService> _parsers;
     private readonly ILogger<BankStatementParsingService> _logger;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly JsonDrivenBankStatementParser? _jsonParser;
 
     public BankStatementParsingService(
         IEnumerable<IFileParserService> parsers,
-        ILogger<BankStatementParsingService> logger)
+        ILogger<BankStatementParsingService> logger,
+        ILoggerFactory loggerFactory)
     {
         _parsers = parsers;
         _logger = logger;
+        _loggerFactory = loggerFactory;
         // Load JSON definitions at startup
         // Find the definitions directory relative to the assembly location
         var assemblyDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -41,7 +44,8 @@ public class BankStatementParsingService
             var defs = JsonBankParserLoader.LoadAll(defDir);
             if (defs.Count > 0)
             {
-                _jsonParser = new JsonDrivenBankStatementParser(defs);
+                var jsonParserLogger = _loggerFactory.CreateLogger<JsonDrivenBankStatementParser>();
+                _jsonParser = new JsonDrivenBankStatementParser(defs, jsonParserLogger);
                 _logger.LogInformation($"[JSON Parser] Loaded {defs.Count} parser definitions");
             }
             else
