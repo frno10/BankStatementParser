@@ -64,18 +64,7 @@ class Program
             rootCommand.AddCommand(new ProcessCommand(serviceProvider));
             rootCommand.AddCommand(new DatabaseCommand(serviceProvider));
 
-            // Add version option
-            rootCommand.AddOption(new Option<bool>("--version", "Show version information"));
-            rootCommand.SetHandler((bool version) =>
-            {
-                if (version)
-                {
-                    var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                    Console.WriteLine($"bankstmt CLI v{assemblyVersion}");
-                    Console.WriteLine("Bank Statement Processing Tool");
-                    return;
-                }
-            }, rootCommand.Options.OfType<Option<bool>>().First(o => o.Name == "version"));
+            // Note: Version option temporarily removed due to conflict with System.CommandLine default options
 
             // Parse and execute
             return await rootCommand.InvokeAsync(args);
