@@ -1,0 +1,168 @@
+@model BankStatementParsing.Web.Models.TransactionViewModel
+
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Transactions">Transactions</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Details</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-0">Transaction Details</h1>
+            <p class="text-muted">Detailed information for transaction #@Model.Id</p>
+        </div>
+    </div>
+
+    <!-- Transaction Details Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Transaction Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Transaction ID</label>
+                                <div class="fw-bold">#@Model.Id</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Date</label>
+                                <div class="fw-bold">@Model.Date.ToString("dddd, MMMM dd, yyyy")</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Description</label>
+                                <div class="fw-bold">@Model.Description</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Reference</label>
+                                <div class="fw-bold">@(string.IsNullOrEmpty(Model.Reference) ? "N/A" : Model.Reference)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Amount</label>
+                                <div class="fw-bold">
+                                    @if (Model.Amount >= 0)
+                                    {
+                                        <span class="text-success">+@Model.Amount.ToString("N2") @Model.Currency</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">@Model.Amount.ToString("N2") @Model.Currency</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Currency</label>
+                                <div class="fw-bold">@Model.Currency</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Type</label>
+                                <div class="fw-bold">
+                                    @if (Model.Amount >= 0)
+                                    {
+                                        <span class="badge bg-success">Credit</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Debit</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Account Information -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Account Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Bank</label>
+                        <div class="fw-bold">@Model.BankName</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Account Number</label>
+                        <div class="fw-bold">@Model.AccountNumber</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Statement</label>
+                        <div class="fw-bold">@(string.IsNullOrEmpty(Model.StatementNumber) ? "N/A" : Model.StatementNumber)</div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.MerchantName))
+            {
+                <!-- Merchant Information -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Merchant Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Name</label>
+                            <div class="fw-bold">@Model.MerchantName</div>
+                        </div>
+                        @if (Model.MerchantTags != null && Model.MerchantTags.Any())
+                        {
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Categories</label>
+                                <div>
+                                    @foreach (var tag in Model.MerchantTags)
+                                    {
+                                        <span class="badge bg-secondary me-1">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.TransactionTags != null && Model.TransactionTags.Any())
+            {
+                <!-- Transaction Tags -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tags</h6>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var tag in Model.TransactionTags)
+                        {
+                            <span class="badge bg-info me-1">@tag</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <a href="/Transactions" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Transactions
+                </a>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+</div> 

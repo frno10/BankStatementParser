@@ -20,21 +20,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         
         builder.ConfigureServices(services =>
         {
-            // Remove all existing DbContext related services
-            var descriptorsToRemove = services.Where(d => 
-                d.ServiceType == typeof(DbContextOptions<BankStatementParsingContext>) ||
-                d.ServiceType == typeof(DbContextOptions) ||
-                d.ServiceType == typeof(BankStatementParsingContext)).ToList();
-            
-            foreach (var descriptor in descriptorsToRemove)
-            {
-                services.Remove(descriptor);
-            }
+            // Remove the DbContext registration from the main application
+            services.RemoveAll(typeof(DbContextOptions<BankStatementParsingContext>));
+            services.RemoveAll(typeof(DbContextOptions));
+            services.RemoveAll(typeof(BankStatementParsingContext));
 
-            // Add in-memory database for testing
+            // Add in-memory database for testing with consistent name
             services.AddDbContext<BankStatementParsingContext>(options =>
             {
-                options.UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}");
+                options.UseInMemoryDatabase(databaseName: "IntegrationTestDb");
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
             });
