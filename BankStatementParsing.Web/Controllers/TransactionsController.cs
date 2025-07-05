@@ -125,6 +125,39 @@ public class TransactionsController : Controller
         return View(model);
     }
 
+    public async Task<IActionResult> Details(int id)
+    {
+        var transaction = await _context.Transactions
+            .Include(t => t.Statement)
+                .ThenInclude(s => s.Account)
+            .Include(t => t.Merchant)
+            .Include(t => t.TransactionTags)
+                .ThenInclude(tt => tt.Tag)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (transaction == null)
+        {
+            return NotFound();
+        }
+
+        var viewModel = new TransactionViewModel
+        {
+            Id = transaction.Id,
+            Date = transaction.Date,
+            Description = transaction.Description ?? "",
+            Amount = (decimal)transaction.Amount,
+            Currency = transaction.Currency ?? "",
+            Reference = transaction.Reference,
+            AccountNumber = transaction.Statement.Account.AccountNumber,
+            BankName = transaction.Statement.Account.Name ?? "Unknown Bank",
+            MerchantName = transaction.Merchant?.Name,
+            TransactionTags = transaction.TransactionTags.Select(tt => tt.Tag.Name).ToList(),
+            StatementNumber = transaction.Statement.StatementNumber
+        };
+
+        return View(viewModel);
+    }
+
     public async Task<IActionResult> Export(TransactionFilterViewModel model)
     {
         // Similar filtering logic as Index but return CSV
