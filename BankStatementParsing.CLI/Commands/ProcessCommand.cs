@@ -1,7 +1,13 @@
 using BankStatementParsing.CLI.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI.Commands;
 
@@ -107,8 +113,8 @@ public class ProcessCommand : BaseCommand
                 var totalTransactions = results.Where(r => r.Success).Sum(r => r.TransactionCount);
                 var totalDuration = results.Sum(r => r.TotalDuration.TotalSeconds);
                 
-                var action = dryRun ? "would be imported" : "imported";
-                WriteOutput($"Summary: {successful} successful, {failed} failed, {totalTransactions} transactions {action} in {totalDuration:F1}s", context);
+                var summaryAction = dryRun ? "would be imported" : "imported";
+                WriteOutput($"Summary: {successful} successful, {failed} failed, {totalTransactions} transactions {summaryAction} in {totalDuration:F1}s", context);
                 
                 // Output results in specified format
                 await OutputResults(results, context);

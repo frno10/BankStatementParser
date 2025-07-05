@@ -1,8 +1,14 @@
+using BankStatementParsing.Core.Models;
 using BankStatementParsing.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI.Services;
 
@@ -35,14 +41,14 @@ public class ImportService : IImportService
             }
 
             var extension = Path.GetExtension(dataPath).ToLowerInvariant();
-            object? statementData = null;
+            BankStatementData? statementData = null;
 
             // Parse the input file based on its format
             switch (extension)
             {
                 case ".json":
                     var jsonContent = await File.ReadAllTextAsync(dataPath);
-                    statementData = JsonSerializer.Deserialize<object>(jsonContent);
+                    statementData = JsonSerializer.Deserialize<BankStatementData>(jsonContent);
                     break;
                     
                 case ".csv":
@@ -105,15 +111,8 @@ public class ImportService : IImportService
         return result;
     }
 
-    private int CountTransactions(object statementData)
+    private int CountTransactions(BankStatementData statementData)
     {
-        // Use reflection to count transactions - adapt this to your actual model
-        var transactionsProperty = statementData.GetType().GetProperty("Transactions");
-        if (transactionsProperty?.GetValue(statementData) is IEnumerable<object> transactions)
-        {
-            return transactions.Count();
-        }
-        
-        return 0;
+        return statementData.Transactions?.Count ?? 0;
     }
 }

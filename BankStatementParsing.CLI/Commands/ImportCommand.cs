@@ -1,7 +1,13 @@
 using BankStatementParsing.CLI.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI.Commands;
 
@@ -74,8 +80,8 @@ public class ImportCommand : BaseCommand
             var totalImported = results.Where(r => r.Success).Sum(r => r.ImportedCount);
             var totalSkipped = results.Where(r => r.Success).Sum(r => r.SkippedCount);
             
-            var action = dryRun ? "would be imported" : "imported";
-            WriteOutput($"Summary: {successful} successful, {failed} failed, {totalImported} transactions {action}, {totalSkipped} skipped", context);
+            var summaryAction = dryRun ? "would be imported" : "imported";
+            WriteOutput($"Summary: {successful} successful, {failed} failed, {totalImported} transactions {summaryAction}, {totalSkipped} skipped", context);
             
             // Output results in specified format
             await OutputResults(results, context);

@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Linq;
 
 namespace BankStatementParsing.CLI.Commands;
 
@@ -23,13 +25,13 @@ public abstract class BaseCommand : Command
     }
 
     protected bool IsVerbose(InvocationContext context) => 
-        context.ParseResult.GetValueForOption(GetOption("--verbose"));
+        context.ParseResult.GetValueForOption(GetOption("--verbose")) as bool? ?? false;
 
     protected bool IsQuiet(InvocationContext context) => 
-        context.ParseResult.GetValueForOption(GetOption("--quiet"));
+        context.ParseResult.GetValueForOption(GetOption("--quiet")) as bool? ?? false;
 
     protected string GetOutputFormat(InvocationContext context) => 
-        context.ParseResult.GetValueForOption(GetOption("--output")) ?? "table";
+        context.ParseResult.GetValueForOption(GetOption("--output")) as string ?? "table";
 
     protected void WriteOutput(string message, InvocationContext context)
     {

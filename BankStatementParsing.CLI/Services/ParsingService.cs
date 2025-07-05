@@ -1,8 +1,13 @@
 using BankStatementParsing.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI.Services;
 
@@ -52,8 +57,8 @@ public class ParsingService : IParsingService
             }
 
             result.TransactionCount = statement.Transactions.Count;
-            result.StatementStartDate = statement.StatementStartDate;
-            result.StatementEndDate = statement.StatementEndDate;
+            result.StatementStartDate = statement.StatementPeriodStart;
+            result.StatementEndDate = statement.StatementPeriodEnd;
             result.OpeningBalance = statement.OpeningBalance;
             result.ClosingBalance = statement.ClosingBalance;
 

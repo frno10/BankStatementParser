@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI.Services;
 

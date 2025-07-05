@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace BankStatementParsing.CLI.Services;
 
 public interface IParsingService
