@@ -62,8 +62,18 @@ public class BankStatementParsingContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        // Only configure SQLite if no provider has been configured and not in testing environment
+        // This allows tests to override with InMemory database
         if (!optionsBuilder.IsConfigured)
         {
+            // Check if we're in a testing environment
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (environment == "Testing")
+            {
+                // In testing, let the test configuration handle the database setup
+                return;
+            }
+
             var dbDir = System.IO.Path.Combine("Database");
             if (!System.IO.Directory.Exists(dbDir))
                 System.IO.Directory.CreateDirectory(dbDir);
