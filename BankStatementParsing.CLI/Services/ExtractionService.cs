@@ -45,7 +45,7 @@ public class ExtractionService : IExtractionService
             if (!force && File.Exists(outputPath))
             {
                 result.OutputPath = outputPath;
-                result.Success = true;
+                result.Success = false;
                 result.Error = "File already exists (use --force to overwrite)";
                 return result;
             }
