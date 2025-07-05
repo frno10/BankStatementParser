@@ -9,8 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System;
 using System.CommandLine;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BankStatementParsing.CLI;
 
@@ -111,9 +115,6 @@ class Program
         services.AddTransient<IParsingService, ParsingService>();
         services.AddTransient<IImportService, ImportService>();
         services.AddTransient<IPipelineService, PipelineService>();
-
-        // Add additional dependencies as needed
-        services.AddTransient<UglyToad.PdfPig.Content.Word>();
     }
 
     private static string FindSolutionRoot()
