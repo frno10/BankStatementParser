@@ -1,5 +1,14 @@
 using BankStatementParsing.Infrastructure;
+using BankStatementParsing.Services;
+using BankStatementParsing.Web.Hubs;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+
+// Initialize Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/bankstatement-web-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +27,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
     // Compute absolute path to the shared database
     var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
     var absoluteDbPath = Path.Combine(solutionRoot, "Database", "bankstatements.db");
-    var connectionString = $"Data Source={absoluteDbPath};Mode=ReadOnly";
+    var connectionString = $"Data Source={absoluteDbPath}";
     builder.Services.AddDbContext<BankStatementParsingContext>(options =>
         options.UseSqlite(connectionString)
         .LogTo(message => { }, LogLevel.Warning)); // Disable SQL command logging
@@ -27,6 +36,19 @@ if (!builder.Environment.IsEnvironment("Testing"))
     Console.WriteLine($"[DEBUG] Using SQLite connection string: {connectionString}");
     Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
 }
+
+// Register new services
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ITransactionRuleService, TransactionRuleService>();
+builder.Services.AddScoped<IExportService, ExportService>();
+builder.Services.AddScoped<ISchedulerService, SchedulerService>();
+builder.Services.AddHostedService<SchedulerService>();
+
+// Configure SignalR
+builder.Services.AddSignalR();
+
+// Configure Serilog
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -48,6 +70,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+
+// Map SignalR hub
+app.MapHub<ProcessingHub>("/processingHub");
 
 app.Run();
 
