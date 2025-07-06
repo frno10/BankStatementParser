@@ -1,8 +1,8 @@
 # BankStatementParsing
 
-[![Build Status](https://github.com/frno10/BankStatementParser/actions/workflows/dotnet.yml/badge.svg)](https://github.com/frno10/BankStatementParser/actions)
+[![Build Status](https://github.com/frno10/BankStatementParser/actions/workflows/ci.yml/badge.svg)](https://github.com/frno10/BankStatementParser/actions)
 [![Tests](https://github.com/frno10/BankStatementParser/actions/workflows/test.yml/badge.svg)](https://github.com/frno10/BankStatementParser/actions)
-[![.NET](https://img.shields.io/badge/.NET-6.0%2B-blue)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-9.0%2B-blue)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/github/license/frno10/BankStatementParser)](LICENSE)
 [![codecov](https://codecov.io/gh/frno10/BankStatementParser/branch/main/graph/badge.svg)](https://codecov.io/gh/frno10/BankStatementParser)
 
