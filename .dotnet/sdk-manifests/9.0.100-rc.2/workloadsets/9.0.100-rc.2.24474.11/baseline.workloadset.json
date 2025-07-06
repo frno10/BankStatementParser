@@ -1,0 +1,17 @@
+{
+"Microsoft.NET.Sdk.Android": "34.99.0-preview.6.340/9.0.100-preview.6",
+"Microsoft.NET.Sdk.iOS": "17.2.9714-net9-p6/9.0.100-preview.6",
+"Microsoft.NET.Sdk.MacCatalyst": "17.2.9714-net9-p6/9.0.100-preview.6",
+"Microsoft.NET.Sdk.macOS": "14.2.9714-net9-p6/9.0.100-preview.6",
+"Microsoft.NET.Sdk.Maui": "9.0.0-preview.6.24327.7/9.0.100-preview.6",
+"Microsoft.NET.Sdk.tvOS": "17.2.9714-net9-p6/9.0.100-preview.6",
+"Microsoft.NET.Workload.Mono.ToolChain.Current": "9.0.0-rc.2.24473.5/9.0.100-rc.2",
+"Microsoft.NET.Workload.Emscripten.Current": "9.0.0-rc.2.24468.8/9.0.100-rc.2",
+"Microsoft.NET.Workload.Emscripten.net6": "9.0.0-rc.2.24468.8/9.0.100-rc.2",
+"Microsoft.NET.Workload.Emscripten.net7": "9.0.0-rc.2.24468.8/9.0.100-rc.2",
+"Microsoft.NET.Workload.Emscripten.net8": "9.0.0-rc.2.24468.8/9.0.100-rc.2",
+"Microsoft.NET.Workload.Mono.ToolChain.net6": "9.0.0-rc.2.24473.5/9.0.100-rc.2",
+"Microsoft.NET.Workload.Mono.ToolChain.net7": "9.0.0-rc.2.24473.5/9.0.100-rc.2",
+"Microsoft.NET.Workload.Mono.ToolChain.net8": "9.0.0-rc.2.24473.5/9.0.100-rc.2",
+"Microsoft.NET.Sdk.Aspire": "8.2.0/8.0.100",
+}

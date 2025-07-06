@@ -1,0 +1,22 @@
+{
+  "version": "8.2.0",
+  "workloads": {
+    "aspire": {
+      "description": ".NET Aspire SDK",
+      "packs": [
+        "Aspire.Hosting.Sdk",
+        "Aspire.ProjectTemplates"
+      ]
+    }
+  },
+  "packs": {
+    "Aspire.Hosting.Sdk": {
+      "kind": "sdk",
+      "version": "8.2.0"
+    },
+    "Aspire.ProjectTemplates": {
+      "kind": "template",
+      "version": "8.2.0"
+    }
+  }
+}

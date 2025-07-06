@@ -1,0 +1,57 @@
+{
+	"version": "17.2.9714-net9-p6",
+	"workloads": {
+		"maccatalyst": {
+			"description": ".NET SDK Workload for building MacCatalyst applications.",
+			"packs": [
+				"Microsoft.MacCatalyst.Sdk.net9.0_17.2",
+				"Microsoft.MacCatalyst.Sdk.net8.0_17.0",
+				"Microsoft.MacCatalyst.Sdk.net8",
+				"Microsoft.MacCatalyst.Ref.net9.0_17.2",
+				"Microsoft.MacCatalyst.Runtime.maccatalyst-x64.net9.0_17.2",
+				"Microsoft.MacCatalyst.Runtime.maccatalyst-arm64.net9.0_17.2",
+				"Microsoft.MacCatalyst.Templates.net9"
+			],
+			"extends": [
+				"microsoft-net-runtime-maccatalyst",
+				"microsoft-net-runtime-maccatalyst-net8",
+			]
+		},
+	},
+	"packs": {
+		"Microsoft.MacCatalyst.Sdk.net9.0_17.2": {
+			"kind": "sdk",
+			"version": "17.2.9714-net9-p6",
+		},
+		"Microsoft.MacCatalyst.Sdk.net8.0_17.0": {
+			"kind": "sdk",
+			"version": "17.0.8523",
+		},
+		"Microsoft.MacCatalyst.Sdk.net8": {
+			"kind": "sdk",
+			"version": "17.2.8078",
+			"alias-to": {
+				"any": "Microsoft.MacCatalyst.Sdk"
+			}
+		},
+		"Microsoft.MacCatalyst.Ref.net9.0_17.2": {
+			"kind": "framework",
+			"version": "17.2.9714-net9-p6"
+		},
+		"Microsoft.MacCatalyst.Runtime.maccatalyst-x64.net9.0_17.2": {
+			"kind": "framework",
+			"version": "17.2.9714-net9-p6"
+		},
+		"Microsoft.MacCatalyst.Runtime.maccatalyst-arm64.net9.0_17.2": {
+			"kind": "framework",
+			"version": "17.2.9714-net9-p6"
+		},
+		"Microsoft.MacCatalyst.Templates.net9": {
+			"kind": "template",
+			"version": "17.2.9714-net9-p6",
+			"alias-to": {
+				"any": "Microsoft.MacCatalyst.Templates",
+			}
+		}
+	}
+}
