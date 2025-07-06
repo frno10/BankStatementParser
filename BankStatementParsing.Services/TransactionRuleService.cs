@@ -1,4 +1,4 @@
-using BankStatementParsing.Core.Models;
+THIS SHOULD BE A LINTER ERRORusing BankStatementParsing.Core.Models;
 using BankStatementParsing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
