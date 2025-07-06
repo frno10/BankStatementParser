@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NCrontab;
 using System.Text.Json;
+using System.Globalization;
 
 namespace BankStatementParsing.Services;
 
@@ -194,11 +195,24 @@ public class SchedulerService : BackgroundService, ISchedulerService
         {
             var delay = job.NextRun.Value - DateTime.UtcNow;
             var timer = new Timer(
-                async _ => await ExecuteJobAsync(job.Id),
+                _ =>
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await ExecuteJobAsync(job.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Unhandled exception in scheduled job timer for job {JobId}", job.Id);
+                        }
+                    });
+                },
                 null,
                 delay,
                 Timeout.InfiniteTimeSpan);
-            
+
             _jobTimers[job.Id] = timer;
         }
     }
@@ -279,13 +293,28 @@ public class SchedulerService : BackgroundService, ISchedulerService
         // Get parameters from job
         var parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(job.Parameters ?? "{}");
         
+        // Safely parse optional dates
+        DateTime? dateFrom = null;
+        if (parameters.TryGetValue("dateFrom", out var dateFromObj) &&
+            DateTime.TryParse(dateFromObj?.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDateFrom))
+        {
+            dateFrom = parsedDateFrom;
+        }
+
+        DateTime? dateTo = null;
+        if (parameters.TryGetValue("dateTo", out var dateToObj) &&
+            DateTime.TryParse(dateToObj?.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDateTo))
+        {
+            dateTo = parsedDateTo;
+        }
+
         // Create export request based on job parameters
         var exportRequest = new ExportRequest
         {
-            UserId = 1, // You would get this from job parameters
-            Format = parameters.ContainsKey("format") ? parameters["format"].ToString() ?? "csv" : "csv",
-            DateFrom = parameters.ContainsKey("dateFrom") ? DateTime.Parse(parameters["dateFrom"].ToString() ?? DateTime.MinValue.ToString()) : null,
-            DateTo = parameters.ContainsKey("dateTo") ? DateTime.Parse(parameters["dateTo"].ToString() ?? DateTime.MaxValue.ToString()) : null
+            UserId = 1, // Replace with parameterised userId once available
+            Format = parameters.TryGetValue("format", out var fmt) ? fmt?.ToString() ?? "csv" : "csv",
+            DateFrom = dateFrom,
+            DateTo = dateTo
         };
         
         await exportService.CreateExportRequestAsync(exportRequest);
@@ -298,7 +327,12 @@ public class SchedulerService : BackgroundService, ISchedulerService
     private async Task<bool> ExecuteCleanupFilesJobAsync(ScheduledJob job, IServiceProvider serviceProvider)
     {
         var parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(job.Parameters ?? "{}");
-        var retentionDays = parameters.ContainsKey("retentionDays") ? int.Parse(parameters["retentionDays"].ToString() ?? "30") : 30;
+        var retentionDays = 30;
+        if (parameters.TryGetValue("retentionDays", out var retentionObj) &&
+            int.TryParse(retentionObj?.ToString(), out var parsedRetention) && parsedRetention > 0)
+        {
+            retentionDays = parsedRetention;
+        }
         var targetDirectory = parameters.ContainsKey("directory") ? parameters["directory"].ToString() : "exports";
         
         var cutoffDate = DateTime.UtcNow.AddDays(-retentionDays);
@@ -334,7 +368,12 @@ public class SchedulerService : BackgroundService, ISchedulerService
         var ruleService = serviceProvider.GetRequiredService<ITransactionRuleService>();
         
         var parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(job.Parameters ?? "{}");
-        var userId = parameters.ContainsKey("userId") ? int.Parse(parameters["userId"].ToString() ?? "1") : 1;
+        var userId = 1;
+        if (parameters.TryGetValue("userId", out var userIdObj) &&
+            int.TryParse(userIdObj?.ToString(), out var parsedUserId) && parsedUserId > 0)
+        {
+            userId = parsedUserId;
+        }
         
         var appliedCount = await ruleService.ApplyRulesToAllTransactionsAsync(userId);
         
