@@ -1,4 +1,4 @@
-THIS SHOULD BE A LINTER ERRORusing BankStatementParsing.Core.Models;
+using BankStatementParsing.Core.Models;
 using BankStatementParsing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -89,17 +89,20 @@ public class TransactionRuleService : ITransactionRuleService
 
     public async Task<int> ApplyRulesToAllTransactionsAsync(int userId)
     {
+        // Retrieve only the active rules for the requesting user
         var rules = await GetRulesAsync(userId);
+        if (!rules.Any())
+            return 0;
+
         var appliedCount = 0;
 
-        // Get all transactions for the user's accounts
-        var transactions = await _context.Transactions
+        // Stream through only the target user's transactions to avoid loading unrelated data
+        await foreach (var transaction in _context.Transactions
+            .Include(t => t.Merchant)
+            .Include(t => t.TransactionTags).ThenInclude(tt => tt.Tag)
             .Include(t => t.Statement)
-            .ThenInclude(s => s.Account)
             .Where(t => t.Statement.UserId == userId)
-            .ToListAsync();
-
-        foreach (var transaction in transactions)
+            .AsAsyncEnumerable())
         {
             foreach (var rule in rules.Where(r => r.IsActive))
             {
@@ -107,7 +110,7 @@ public class TransactionRuleService : ITransactionRuleService
                 {
                     await ApplyRuleActionsAsync(rule, transaction);
                     appliedCount++;
-                    break; // Only apply first matching rule
+                    break; // Only apply the first matching rule per transaction
                 }
             }
         }
