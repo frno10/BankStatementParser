@@ -96,7 +96,7 @@ public class TransactionRuleService : ITransactionRuleService
         var transactions = await _context.Transactions
             .Include(t => t.Statement)
             .ThenInclude(s => s.Account)
-            .Where(t => t.Statement.Account.Id > 0) // Simple filter, you may need to adjust based on your user model
+            .Where(t => t.Statement.UserId == userId)
             .ToListAsync();
 
         foreach (var transaction in transactions)

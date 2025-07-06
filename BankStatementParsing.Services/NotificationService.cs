@@ -42,7 +42,7 @@ public class NotificationService : INotificationService
         var message = $"Bank statement processing completed successfully!\n\n" +
                      $"File: {fileName}\n" +
                      $"Transactions processed: {transactionCount}\n" +
-                     $"Processed at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                     $"Processed at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
 
         await SendNotificationAsync(settings, "Processing Complete", message);
     }
@@ -55,7 +55,7 @@ public class NotificationService : INotificationService
         var message = $"Bank statement processing failed!\n\n" +
                      $"File: {fileName}\n" +
                      $"Error: {error}\n" +
-                     $"Failed at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                     $"Failed at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}";
 
         await SendNotificationAsync(settings, "Processing Failed", message);
     }

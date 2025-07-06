@@ -3,6 +3,7 @@ using System;
 using BankStatementParsing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankStatementParsing.Infrastructure.Migrations
 {
     [DbContext(typeof(BankStatementParsingContext))]
-    partial class BankStatementParsingContextModelSnapshot : ModelSnapshot
+    [Migration("20250706130915_AddUserIdToStatement")]
+    partial class AddUserIdToStatement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");

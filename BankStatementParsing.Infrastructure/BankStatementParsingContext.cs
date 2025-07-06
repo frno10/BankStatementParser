@@ -113,6 +113,7 @@ public class Statement
     public int Id { get; set; }
     public int AccountId { get; set; }
     public Account Account { get; set; } = null!;
+    public int UserId { get; set; }
     public DateTime PeriodStart { get; set; }
     public DateTime PeriodEnd { get; set; }
     public string? StatementNumber { get; set; }
