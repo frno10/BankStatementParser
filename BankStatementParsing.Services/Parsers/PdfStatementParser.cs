@@ -127,7 +127,6 @@ public class PdfStatementParser : BaseBankStatementParser
             statementData.AccountNumber, statementData.AccountHolderName);
         });
     }
-    }
 
     private async Task ParseStatementPeriod(BankStatementData statementData, string text)
     {
@@ -156,7 +155,6 @@ public class PdfStatementParser : BaseBankStatementParser
         _logger.LogDebug("Parsed period - Start: {Start}, End: {End}", 
             statementData.StatementPeriodStart, statementData.StatementPeriodEnd);
         });
-    }
     }
 
     private async Task ParseBalances(BankStatementData statementData, string text)
@@ -203,7 +201,6 @@ public class PdfStatementParser : BaseBankStatementParser
         _logger.LogDebug("Parsed balances - Opening: {Opening}, Closing: {Closing}", 
             statementData.OpeningBalance, statementData.ClosingBalance);
         });
-    }
     }
 
     private async Task<List<TransactionData>> ParseTransactions(string text)

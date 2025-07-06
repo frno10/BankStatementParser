@@ -54,10 +54,10 @@ public class BankStatementImportService
             await _db.SaveChangesAsync();
 
             // Pre-load existing transactions for this statement to avoid N+1 queries
-            var existingTransactions = await _db.Transactions
+            var existingTransactions = (await _db.Transactions
                 .Where(x => x.StatementId == statement.Id)
                 .Select(x => new { x.Date, x.Amount, x.Description })
-                .ToHashSetAsync();
+                .ToListAsync()).ToHashSet();
 
             // Import transactions in batch
             int imported = 0;
@@ -83,7 +83,7 @@ public class BankStatementImportService
                 if (!string.IsNullOrWhiteSpace(t.MerchantName))
                 {
                     // Use cache to avoid repeated database lookups
-                    if (!merchantCache.TryGetValue(t.MerchantName.ToLower(), out merchantId))
+                    if (!merchantCache.TryGetValue(t.MerchantName.ToLower(), out int cachedMerchantId))
                     {
                         var merchant = await _db.Merchants.FirstOrDefaultAsync(m => m.Name.ToLower() == t.MerchantName.ToLower());
                         if (merchant == null)
@@ -94,6 +94,10 @@ public class BankStatementImportService
                         }
                         merchantId = merchant.Id;
                         merchantCache[t.MerchantName.ToLower()] = merchantId.Value;
+                    }
+                    else
+                    {
+                        merchantId = cachedMerchantId;
                     }
                 }
 

@@ -96,7 +96,8 @@ class Program
         services.AddTransient<BankStatementParsingService>(sp =>
             new BankStatementParsingService(
                 new[] { sp.GetRequiredService<PdfStatementParser>() },
-                sp.GetRequiredService<ILogger<BankStatementParsingService>>()));
+                sp.GetRequiredService<ILogger<BankStatementParsingService>>(),
+                sp.GetRequiredService<ILoggerFactory>()));
         services.AddTransient<BankStatementImportService>();
 
         // Register CLI services

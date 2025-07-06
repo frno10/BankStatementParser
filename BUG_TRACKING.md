@@ -1,0 +1,10 @@
+# Bug Tracking Log
+
+| ID   | Title                                      | Description                                                                 | Status      | Severity   | Date Reported | Date Resolved | Resolution/Notes                |
+|------|--------------------------------------------|-----------------------------------------------------------------------------|-------------|------------|---------------|---------------|----------------------------------|
+| 001  | Scheduler fails on malformed parameters    | Scheduler service uses DateTime.Parse/int.Parse without validation, causing exceptions on bad input. | Open        | High       | 2024-07-01    |               |                                  |
+| 002  | SchedulerService fails with invalid integers| int.Parse for retentionDays/userId can throw exceptions if input is invalid. | Open        | Medium     | 2024-07-01    |               |                                  |
+| 003  | Async timer callback unhandled exceptions  | Timer uses async lambda, causing unhandled exceptions and lost errors.       | Open        | Medium     | 2024-07-01    |               |                                  |
+| 004  | Empty collection Min/Max error             | ExportService calls Min/Max on empty collection, causing InvalidOperationException. | Open        | Medium     | 2024-07-01    |               |                                  |
+| 005  | Timestamps use local time                  | NotificationService uses DateTime.Now instead of DateTime.UtcNow.            | Open        | Low        | 2024-07-01    |               |                                  |
+| 006  | Rules applied to all transactions          | Rules engine does not filter by userId, so rules are applied globally.       | Open        | Critical   | 2024-07-01    |               |                                  | 
