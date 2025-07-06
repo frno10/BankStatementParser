@@ -1,0 +1,9 @@
+mode: ContinuousDeployment
+branches:
+  main:
+    regex: ^main$
+    increment: Minor
+    is-mainline: true
+  feature:
+    regex: ^feature[/-]
+    increment: Minor

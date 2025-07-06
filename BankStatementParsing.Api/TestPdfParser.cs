@@ -21,7 +21,7 @@ public class TestPdfParser
             // Create the parser
             var pdfParser = new PdfStatementParser(parserLogger);
             var parsers = new[] { pdfParser };
-            var parsingService = new BankStatementParsingService(parsers, serviceLogger);
+            var parsingService = new BankStatementParsingService(parsers, serviceLogger, loggerFactory);
 
             // Path to the PDF file
             var pdfPath = @"AccountData\Account1\Inbox\4014293949_20250531_5_MSKB.pdf";

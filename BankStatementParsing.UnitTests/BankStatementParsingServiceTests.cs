@@ -34,7 +34,8 @@ public class BankStatementParsingServiceTests
         _mockParsers.Add(parser2);
         
         var parsers = _mockParsers.Select(m => m.Object);
-        _service = new BankStatementParsingService(parsers, _mockLogger.Object);
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
+        _service = new BankStatementParsingService(parsers, _mockLogger.Object, mockLoggerFactory.Object);
     }
 
     [Fact]
@@ -224,9 +225,10 @@ public class BankStatementParsingServiceTests
         // Arrange
         var emptyParsers = new List<IFileParserService>();
         var logger = new Mock<ILogger<BankStatementParsingService>>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
 
         // Act
-        var action = () => new BankStatementParsingService(emptyParsers, logger.Object);
+        var action = () => new BankStatementParsingService(emptyParsers, logger.Object, mockLoggerFactory.Object);
 
         // Assert
         action.Should().NotThrow();
@@ -237,9 +239,10 @@ public class BankStatementParsingServiceTests
     {
         // Arrange
         var parsers = new List<IFileParserService>();
+        var mockLoggerFactory = new Mock<ILoggerFactory>();
 
         // Act
-        var action = () => new BankStatementParsingService(parsers, null!);
+        var action = () => new BankStatementParsingService(parsers, null!, mockLoggerFactory.Object);
 
         // Assert
         action.Should().Throw<ArgumentNullException>();

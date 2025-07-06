@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BankStatementParsing.Core.Models;
 
 namespace BankStatementParsing.Infrastructure;
 
@@ -13,6 +14,13 @@ public class BankStatementParsingContext : DbContext
     public DbSet<MerchantTag> MerchantTags { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
+    
+    // New enhanced features
+    public DbSet<NotificationSettings> NotificationSettings { get; set; }
+    public DbSet<TransactionRule> TransactionRules { get; set; }
+    public DbSet<ScheduledJob> ScheduledJobs { get; set; }
+    public DbSet<ProcessingMetrics> ProcessingMetrics { get; set; }
+    public DbSet<ExportRequest> ExportRequests { get; set; }
 
     public BankStatementParsingContext(DbContextOptions<BankStatementParsingContext> options)
         : base(options) { }
@@ -105,6 +113,7 @@ public class Statement
     public int Id { get; set; }
     public int AccountId { get; set; }
     public Account Account { get; set; } = null!;
+    public int UserId { get; set; }
     public DateTime PeriodStart { get; set; }
     public DateTime PeriodEnd { get; set; }
     public string? StatementNumber { get; set; }

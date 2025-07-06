@@ -1,0 +1,352 @@
+@{
+    ViewData["Title"] = "Transaction Rules";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-magic"></i> Transaction Rules
+                </h1>
+                <button class="btn btn-primary" onclick="showCreateRuleModal()">
+                    <i class="fas fa-plus"></i> Add New Rule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Active Rules</h6>
+                    <button class="btn btn-sm btn-success" onclick="applyAllRules()">
+                        <i class="fas fa-play"></i> Apply All Rules
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="rulesTable">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Name</th>
+                                    <th>Conditions</th>
+                                    <th>Actions</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rules will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Rule Modal -->
+<div class="modal fade" id="ruleModal" tabindex="-1" aria-labelledby="ruleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ruleModalLabel">Create Transaction Rule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ruleForm">
+                    <input type="hidden" id="ruleId" name="id" />
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="ruleName" class="form-label">Rule Name</label>
+                                <input type="text" class="form-control" id="ruleName" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="rulePriority" class="form-label">Priority</label>
+                                <input type="number" class="form-control" id="rulePriority" name="priority" min="1" max="100" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="ruleDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="ruleDescription" name="description" rows="2"></textarea>
+                    </div>
+                    
+                    <h6 class="mb-3">Conditions</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="descriptionContains" class="form-label">Description Contains</label>
+                                <input type="text" class="form-control" id="descriptionContains" name="descriptionContains">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="descriptionRegex" class="form-label">Description Regex</label>
+                                <input type="text" class="form-control" id="descriptionRegex" name="descriptionRegex">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="amountMin" class="form-label">Min Amount</label>
+                                <input type="number" class="form-control" id="amountMin" name="amountMin" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="amountMax" class="form-label">Max Amount</label>
+                                <input type="number" class="form-control" id="amountMax" name="amountMax" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="amountEquals" class="form-label">Exact Amount</label>
+                                <input type="number" class="form-control" id="amountEquals" name="amountEquals" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="merchantName" class="form-label">Merchant Name</label>
+                                <input type="text" class="form-control" id="merchantName" name="merchantName">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="reference" class="form-label">Reference</label>
+                                <input type="text" class="form-control" id="reference" name="reference">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="mb-3">Actions</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="assignCategory" class="form-label">Assign Category</label>
+                                <input type="text" class="form-control" id="assignCategory" name="assignCategory">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="assignMerchant" class="form-label">Assign Merchant</label>
+                                <input type="text" class="form-control" id="assignMerchant" name="assignMerchant">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="assignTags" class="form-label">Assign Tags (comma-separated)</label>
+                                <input type="text" class="form-control" id="assignTags" name="assignTags">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="setNote" class="form-label">Set Note</label>
+                                <input type="text" class="form-control" id="setNote" name="setNote">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" checked>
+                            <label class="form-check-label" for="isActive">
+                                Rule is active
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveRule()">Save Rule</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const userId = 1; // You would get this from authentication
+        
+        $(document).ready(function() {
+            loadRules();
+        });
+        
+        function loadRules() {
+            $.get(`/api/rules/${userId}`)
+                .done(function(rules) {
+                    const tbody = $('#rulesTable tbody');
+                    tbody.empty();
+                    
+                    rules.forEach(rule => {
+                        const conditions = getConditionsText(rule);
+                        const actions = getActionsText(rule);
+                        
+                        tbody.append(`
+                            <tr>
+                                <td>${rule.priority}</td>
+                                <td>${rule.name}</td>
+                                <td>${conditions}</td>
+                                <td>${actions}</td>
+                                <td>${rule.isActive ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>'}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="editRule(${rule.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                })
+                .fail(function() {
+                    showToast('Error', 'Failed to load rules', 'error');
+                });
+        }
+        
+        function getConditionsText(rule) {
+            const conditions = [];
+            if (rule.descriptionContains) conditions.push(`Description contains "${rule.descriptionContains}"`);
+            if (rule.descriptionRegex) conditions.push(`Description matches /${rule.descriptionRegex}/`);
+            if (rule.amountMin) conditions.push(`Amount >= ${rule.amountMin}`);
+            if (rule.amountMax) conditions.push(`Amount <= ${rule.amountMax}`);
+            if (rule.amountEquals) conditions.push(`Amount = ${rule.amountEquals}`);
+            if (rule.merchantName) conditions.push(`Merchant: "${rule.merchantName}"`);
+            if (rule.reference) conditions.push(`Reference: "${rule.reference}"`);
+            return conditions.join('<br>') || 'No conditions';
+        }
+        
+        function getActionsText(rule) {
+            const actions = [];
+            if (rule.assignCategory) actions.push(`Category: "${rule.assignCategory}"`);
+            if (rule.assignMerchant) actions.push(`Merchant: "${rule.assignMerchant}"`);
+            if (rule.assignTags) actions.push(`Tags: "${rule.assignTags}"`);
+            if (rule.setNote) actions.push(`Note: "${rule.setNote}"`);
+            return actions.join('<br>') || 'No actions';
+        }
+        
+        function showCreateRuleModal() {
+            $('#ruleModalLabel').text('Create Transaction Rule');
+            $('#ruleForm')[0].reset();
+            $('#ruleId').val('');
+            $('#isActive').prop('checked', true);
+            $('#ruleModal').modal('show');
+        }
+        
+        function editRule(ruleId) {
+            $.get(`/api/rules/${userId}`)
+                .done(function(rules) {
+                    const rule = rules.find(r => r.id === ruleId);
+                    if (rule) {
+                        $('#ruleModalLabel').text('Edit Transaction Rule');
+                        $('#ruleId').val(rule.id);
+                        $('#ruleName').val(rule.name);
+                        $('#ruleDescription').val(rule.description || '');
+                        $('#rulePriority').val(rule.priority);
+                        $('#descriptionContains').val(rule.descriptionContains || '');
+                        $('#descriptionRegex').val(rule.descriptionRegex || '');
+                        $('#amountMin').val(rule.amountMin || '');
+                        $('#amountMax').val(rule.amountMax || '');
+                        $('#amountEquals').val(rule.amountEquals || '');
+                        $('#merchantName').val(rule.merchantName || '');
+                        $('#reference').val(rule.reference || '');
+                        $('#assignCategory').val(rule.assignCategory || '');
+                        $('#assignMerchant').val(rule.assignMerchant || '');
+                        $('#assignTags').val(rule.assignTags || '');
+                        $('#setNote').val(rule.setNote || '');
+                        $('#isActive').prop('checked', rule.isActive);
+                        $('#ruleModal').modal('show');
+                    }
+                });
+        }
+        
+        function saveRule() {
+            const formData = new FormData($('#ruleForm')[0]);
+            const ruleData = {
+                id: parseInt($('#ruleId').val()) || 0,
+                userId: userId,
+                name: formData.get('name'),
+                description: formData.get('description'),
+                priority: parseInt(formData.get('priority')),
+                descriptionContains: formData.get('descriptionContains') || null,
+                descriptionRegex: formData.get('descriptionRegex') || null,
+                amountMin: parseFloat(formData.get('amountMin')) || null,
+                amountMax: parseFloat(formData.get('amountMax')) || null,
+                amountEquals: parseFloat(formData.get('amountEquals')) || null,
+                merchantName: formData.get('merchantName') || null,
+                reference: formData.get('reference') || null,
+                assignCategory: formData.get('assignCategory') || null,
+                assignMerchant: formData.get('assignMerchant') || null,
+                assignTags: formData.get('assignTags') || null,
+                setNote: formData.get('setNote') || null,
+                isActive: $('#isActive').is(':checked')
+            };
+            
+            const url = ruleData.id ? `/api/rules/${ruleData.id}` : '/api/rules';
+            const method = ruleData.id ? 'PUT' : 'POST';
+            
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: 'application/json',
+                data: JSON.stringify(ruleData)
+            })
+            .done(function() {
+                $('#ruleModal').modal('hide');
+                loadRules();
+                showToast('Success', 'Rule saved successfully', 'success');
+            })
+            .fail(function() {
+                showToast('Error', 'Failed to save rule', 'error');
+            });
+        }
+        
+        function deleteRule(ruleId) {
+            if (confirm('Are you sure you want to delete this rule?')) {
+                $.ajax({
+                    url: `/api/rules/${ruleId}`,
+                    method: 'DELETE'
+                })
+                .done(function() {
+                    loadRules();
+                    showToast('Success', 'Rule deleted successfully', 'success');
+                })
+                .fail(function() {
+                    showToast('Error', 'Failed to delete rule', 'error');
+                });
+            }
+        }
+        
+        function applyAllRules() {
+            if (confirm('Apply all rules to existing transactions? This may take a while.')) {
+                $.post(`/api/rules/${userId}/apply-all`)
+                    .done(function(result) {
+                        showToast('Success', `Applied rules to ${result.appliedCount} transactions`, 'success');
+                    })
+                    .fail(function() {
+                        showToast('Error', 'Failed to apply rules', 'error');
+                    });
+            }
+        }
+    </script>
+}

@@ -1,0 +1,12 @@
+# Bug Tracking Log
+
+| ID   | Title                                      | Description                                                                 | Status      | Severity   | Date Reported | Date Resolved | Resolution/Notes                |
+|------|--------------------------------------------|-----------------------------------------------------------------------------|-------------|------------|---------------|---------------|----------------------------------|
+| 001  | Scheduler fails on malformed parameters    | Scheduler service uses DateTime.Parse/int.Parse without validation, causing exceptions on bad input. | Open        | High       | 2024-07-01    |               |                                  |
+| 002  | Timestamp Inconsistency Causes Timezone Issues | DateTime.Now is used for notification timestamps, inconsistent with UTC elsewhere. | Resolved | Medium | 2024-07-05 | 2024-07-05 | Replaced DateTime.Now with DateTime.UtcNow in NotificationService |
+| 003  | Transaction Rules Apply Incorrectly        | ApplyRulesToAllTransactionsAsync applies rules to all transactions, not just the user's. | Open | High | 2024-07-05 |               |                                  |
+| 004  | Unhandled Exceptions in Async Timer Callbacks | Timer callbacks use async void, causing exceptions to be lost or crash the app. | Open | High | 2024-07-05 |               |                                  |
+| 005  | Unvalidated Parsing Causes Job Failures    | DateTime.Parse/int.Parse used without validation in job parameter parsing. | Open | High | 2024-07-05 |               |                                  |
+| 006  | Invalid Integer Handling Causes Cleanup Job Failure | int.Parse used for retentionDays without validation, causing job failure. | Open | Medium | 2024-07-05 |               |                                  |
+| 007  | Empty Collection Handling in Export Method | ExportToOfxAsync calls Min()/Max() on possibly empty collections, causing exceptions. | Open | Medium | 2024-07-05 |               |                                  |
+| 008  | Invalid User ID Causes Job Failure         | int.Parse used for userId without validation, causing job failure. | Open | Medium | 2024-07-05 |               |                                  | 

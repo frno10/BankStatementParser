@@ -122,6 +122,28 @@ await transaction.CommitAsync();
 
 ---
 
+## Open Bugs
+
+### Bug: Export Fails on Empty Transaction Collection
+- **Description**: The `ExportToOfxAsync` method throws an `InvalidOperationException` when the `transactions` collection is empty. This occurs because `Min()` and `Max()` are called on the collection without checking if it contains any elements, which can happen if no transactions match the export filters.
+- **Location**: `BankStatementParsing.Services/ExportService.cs` L263-L265
+
+### Bug: Scheduler Fails on Invalid User ID
+- **Description**: In `SchedulerService.ExecuteApplyRulesJobAsync`, the `userId` parameter is parsed using `int.Parse` without validation. This can cause a `FormatException` and job failure if the parameter is not a valid integer. `int.TryParse` should be used for robust parsing.
+- **Location**: `BankStatementParsing.Services/SchedulerService.cs` L336-L337
+
+### Bug: Async Void Lambda Causes Unhandled Exceptions
+- **Description**: The `Timer` callback in the `ScheduleJob` method uses an `async void` lambda (`async _ => await ExecuteJobAsync(job.Id)`). This `async void` pattern prevents exceptions thrown during the execution of `ExecuteJobAsync` from being properly caught, potentially leading to unhandled exceptions and application crashes.
+- **Location**: `BankStatementParsing.Services/SchedulerService.cs` L195-L200
+
+### Bug: Invalid Integer Handling Causes Cleanup Job Failure
+- **Description**: The `ExecuteCleanupFilesJobAsync` method uses `int.Parse` without validation for the `retentionDays` parameter. If the parameter contains an invalid integer value, it will throw a `FormatException`, causing the cleanup job to fail. `int.TryParse` should be used for robust parsing.
+- **Location**: `BankStatementParsing.Services/SchedulerService.cs` L300-L301, L336-L337
+
+### Bug: Date Parsing Vulnerability Causes Job Failures
+- **Description**: `DateTime.Parse` is used without validation for `dateFrom` and `dateTo` job parameters in the `ExecuteExportDataJobAsync` method. Malformed date strings in these parameters will cause a `FormatException`, leading to job failure. `DateTime.TryParse` or explicit validation should be used.
+- **Location**: `BankStatementParsing.Services/SchedulerService.cs` L286-L289
+
 ## Summary
 
 All three bugs have been successfully fixed:

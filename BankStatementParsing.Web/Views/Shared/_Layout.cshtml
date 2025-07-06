@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Bank Statement Analytics</title>
+    <title>@ViewData["Title"] - Bank Statement Parser</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BankStatementParsing.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
         .border-left-primary { border-left: 0.25rem solid #4e73df !important; }
@@ -23,10 +24,10 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                    <i class="fas fa-chart-line"></i> Bank Statement Analytics
+                    <i class="fas fa-chart-line"></i> Bank Statement Parser
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -35,33 +36,41 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Transactions" asp-action="Index">
-                                <i class="fas fa-exchange-alt"></i> Transactions
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">
+                                <i class="fas fa-list"></i> Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">
+                                <i class="fas fa-chart-bar"></i> Analytics
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-chart-bar"></i> Analytics
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-calendar"></i> Monthly Reports</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-tags"></i> Category Analysis</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-store"></i> Merchant Analysis</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i> Export Data</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-cog"></i> Settings
                             </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/Settings/Rules"><i class="fas fa-magic"></i> Transaction Rules</a></li>
+                                <li><a class="dropdown-item" href="/Settings/Notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                                <li><a class="dropdown-item" href="/Settings/Export"><i class="fas fa-download"></i> Export Data</a></li>
+                                <li><a class="dropdown-item" href="/Settings/Schedule"><i class="fas fa-clock"></i> Scheduled Jobs</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/Settings/General"><i class="fas fa-wrench"></i> General Settings</a></li>
+                            </ul>
                         </li>
                     </ul>
+                    <div class="navbar-nav">
+                        <div class="nav-item">
+                            <span class="nav-link text-muted" id="connection-status">
+                                <i class="fas fa-circle text-secondary" id="status-icon"></i> <span id="status-text">Connecting...</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -74,14 +83,31 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - Bank Statement Analytics - 
-            <a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a> | 
-            <a asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
+            &copy; 2024 - Bank Statement Parser - <a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/js/signalr-connection.js" asp-append-version="true"></script>
+    
+    <!-- Toast notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="notification-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-info-circle text-primary me-2"></i>
+                <strong class="me-auto" id="toast-title">Notification</strong>
+                <small id="toast-time">Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-body">
+                <!-- Toast content goes here -->
+            </div>
+        </div>
+    </div>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,30 @@
+name: Bug Tracker and Changelog Update Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-bug-tracker-and-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract PR body and labels
+        id: extract
+        run: |
+          PR_BODY=$(jq -r .pull_request.body "$GITHUB_EVENT_PATH")
+          echo "PR_BODY<<EOF" >> $GITHUB_ENV
+          echo "$PR_BODY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "$PR_BODY" | grep -Eo 'Fixes #[0-9]+' | cut -d'#' -f2 | tr '\n' ',' > bug_ids.txt
+          echo "BUG_IDS=$(cat bug_ids.txt)" >> $GITHUB_ENV
+      - name: Check if BUG_TRACKING.md was updated
+        if: env.BUG_IDS != ""
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff --name-only origin/${{ github.base_ref }} HEAD | grep -q 'BUG_TRACKING.md' || (echo "BUG_TRACKING.md must be updated when closing a bug." && exit 1)
+      - name: Check if RELEASE_NOTES.md was updated
+        if: env.BUG_IDS != ""
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff --name-only origin/${{ github.base_ref }} HEAD | grep -q 'RELEASE_NOTES.md' || (echo "RELEASE_NOTES.md should be updated for features and bug fixes." && exit 1) 

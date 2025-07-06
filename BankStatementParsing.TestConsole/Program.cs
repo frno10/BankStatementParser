@@ -245,8 +245,10 @@ namespace BankStatementParsing.TestConsole
                     Console.WriteLine($"[DEBUG] Absolute path to SQLite DB: {absoluteDbPath}");
                     services.AddTransient<PdfStatementParser>();
                     services.AddTransient<BankStatementParsingService>(sp =>
-                        new BankStatementParsingService(new[] { sp.GetRequiredService<PdfStatementParser>() },
-                            sp.GetRequiredService<ILogger<BankStatementParsingService>>()));
+                        new BankStatementParsingService(
+                            new[] { sp.GetRequiredService<PdfStatementParser>() },
+                            sp.GetRequiredService<ILogger<BankStatementParsingService>>(),
+                            sp.GetRequiredService<ILoggerFactory>()));
                     services.AddTransient<BankStatementImportService>();
                     services.AddTransient<BatchImportService>();
                 })
