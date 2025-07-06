@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using OfficeOpenXml;
 using System.Globalization;
+using System.Linq;
 
 namespace BankStatementParsing.Services;
 
@@ -224,6 +225,13 @@ public class ExportService : IExportService
 
     public async Task<string> ExportToOfxAsync(IEnumerable<Transaction> transactions)
     {
+        var txList = transactions.ToList();
+        if (!txList.Any())
+        {
+            _logger.LogWarning("ExportToOfxAsync called with empty transaction list");
+            return string.Empty;
+        }
+
         var sb = new StringBuilder();
         sb.AppendLine("OFXHEADER:100");
         sb.AppendLine("DATA:OFXSGML");
@@ -242,7 +250,7 @@ public class ExportService : IExportService
         sb.AppendLine("<CODE>0");
         sb.AppendLine("<SEVERITY>INFO");
         sb.AppendLine("</STATUS>");
-        sb.AppendLine("<DTSERVER>" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+        sb.AppendLine("<DTSERVER>" + DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
         sb.AppendLine("<LANGUAGE>ENG");
         sb.AppendLine("</SONRS>");
         sb.AppendLine("</SIGNONMSGSRSV1>");
@@ -261,10 +269,10 @@ public class ExportService : IExportService
         sb.AppendLine("<ACCTTYPE>CHECKING");
         sb.AppendLine("</BANKACCTFROM>");
         sb.AppendLine("<BANKTRANLIST>");
-        sb.AppendLine("<DTSTART>" + transactions.Min(t => t.Date).ToString("yyyyMMdd"));
-        sb.AppendLine("<DTEND>" + transactions.Max(t => t.Date).ToString("yyyyMMdd"));
+        sb.AppendLine("<DTSTART>" + txList.Min(t => t.Date).ToString("yyyyMMdd"));
+        sb.AppendLine("<DTEND>" + txList.Max(t => t.Date).ToString("yyyyMMdd"));
 
-        foreach (var transaction in transactions)
+        foreach (var transaction in txList)
         {
             sb.AppendLine("<STMTTRN>");
             sb.AppendLine("<TRNTYPE>" + (transaction.Amount > 0 ? "CREDIT" : "DEBIT"));

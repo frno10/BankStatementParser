@@ -1,0 +1,520 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "Microsoft.NET.Build.Containers/9.0.100-rc.2.24474.11": {
+        "dependencies": {
+          "Microsoft.Build.Utilities.Core": "17.12.0-preview-24473-03",
+          "Microsoft.CodeAnalysis.PublicApiAnalyzers": "3.11.0-beta1.24454.1",
+          "Microsoft.DotNet.Cli.Utils": "9.0.100-rc.2.24474.11",
+          "Microsoft.DotNet.XliffTasks": "9.0.0-beta.24466.2",
+          "Microsoft.Extensions.Logging": "9.0.0-rc.2.24473.5",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0-rc.2.24473.5",
+          "NuGet.Packaging": "6.12.0-rc.115",
+          "System.Text.Json": "9.0.0-rc.2.24473.5",
+          "Valleysoft.DockerCredsProvider": "2.2.1"
+        },
+        "runtime": {
+          "Microsoft.NET.Build.Containers.dll": {}
+        },
+        "resources": {
+          "cs/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "cs"
+          },
+          "de/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "de"
+          },
+          "es/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "es"
+          },
+          "fr/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "fr"
+          },
+          "it/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "it"
+          },
+          "ja/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "ja"
+          },
+          "ko/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "ko"
+          },
+          "pl/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "pl"
+          },
+          "pt-BR/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "ru/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "ru"
+          },
+          "tr/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "tr"
+          },
+          "zh-Hans/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "zh-Hant/Microsoft.NET.Build.Containers.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.Build/17.12.0-preview-24473-03": {
+        "dependencies": {
+          "Microsoft.Build.Framework": "17.12.0-preview-24473-03",
+          "Microsoft.NET.StringTools": "17.12.0-preview-24473-03",
+          "System.Collections.Immutable": "8.0.0",
+          "System.Configuration.ConfigurationManager": "9.0.0-rc.2.24473.5",
+          "System.Reflection.Metadata": "8.0.0",
+          "System.Reflection.MetadataLoadContext": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Build.Framework/17.12.0-preview-24473-03": {},
+      "Microsoft.Build.Runtime/17.12.0-preview-24473-03": {
+        "dependencies": {
+          "Microsoft.Build": "17.12.0-preview-24473-03",
+          "Microsoft.Build.Tasks.Core": "17.12.0-preview-24473-03",
+          "System.CodeDom": "9.0.0-rc.2.24473.5",
+          "System.Collections.Immutable": "8.0.0",
+          "System.Configuration.ConfigurationManager": "9.0.0-rc.2.24473.5",
+          "System.Formats.Asn1": "9.0.0-rc.2.24473.5",
+          "System.Reflection.Metadata": "8.0.0",
+          "System.Reflection.MetadataLoadContext": "9.0.0-rc.2.24473.5",
+          "System.Resources.Extensions": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.Pkcs": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.Xml": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Build.Tasks.Core/17.12.0-preview-24473-03": {
+        "dependencies": {
+          "Microsoft.Build.Framework": "17.12.0-preview-24473-03",
+          "Microsoft.Build.Utilities.Core": "17.12.0-preview-24473-03",
+          "Microsoft.NET.StringTools": "17.12.0-preview-24473-03",
+          "System.CodeDom": "9.0.0-rc.2.24473.5",
+          "System.Collections.Immutable": "8.0.0",
+          "System.Configuration.ConfigurationManager": "9.0.0-rc.2.24473.5",
+          "System.Formats.Asn1": "9.0.0-rc.2.24473.5",
+          "System.Resources.Extensions": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.Pkcs": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.Xml": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Build.Utilities.Core/17.12.0-preview-24473-03": {
+        "dependencies": {
+          "Microsoft.Build.Framework": "17.12.0-preview-24473-03",
+          "Microsoft.NET.StringTools": "17.12.0-preview-24473-03",
+          "System.Collections.Immutable": "8.0.0",
+          "System.Configuration.ConfigurationManager": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.CodeAnalysis.PublicApiAnalyzers/3.11.0-beta1.24454.1": {},
+      "Microsoft.DotNet.XliffTasks/9.0.0-beta.24466.2": {},
+      "Microsoft.Extensions.DependencyInjection/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.0-rc.2.24473.5": {},
+      "Microsoft.Extensions.DependencyModel/9.0.0-rc.2.24473.5": {},
+      "Microsoft.Extensions.Logging/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.0-rc.2.24473.5",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0-rc.2.24473.5",
+          "Microsoft.Extensions.Options": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Extensions.Options/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0-rc.2.24473.5",
+          "Microsoft.Extensions.Primitives": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "Microsoft.Extensions.Primitives/9.0.0-rc.2.24473.5": {},
+      "Microsoft.NET.StringTools/17.12.0-preview-24473-03": {},
+      "Newtonsoft.Json/13.0.3": {},
+      "NuGet.Common/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.Frameworks": "6.12.0-rc.115"
+        }
+      },
+      "NuGet.Configuration/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.Common": "6.12.0-rc.115",
+          "System.Security.Cryptography.ProtectedData": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "NuGet.DependencyResolver.Core/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.Configuration": "6.12.0-rc.115",
+          "NuGet.LibraryModel": "6.12.0-rc.115",
+          "NuGet.Protocol": "6.12.0-rc.115"
+        }
+      },
+      "NuGet.Frameworks/6.12.0-rc.115": {},
+      "NuGet.LibraryModel/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.Common": "6.12.0-rc.115",
+          "NuGet.Versioning": "6.12.0-rc.115"
+        }
+      },
+      "NuGet.Packaging/6.12.0-rc.115": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "NuGet.Configuration": "6.12.0-rc.115",
+          "NuGet.Versioning": "6.12.0-rc.115",
+          "System.Formats.Asn1": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.Pkcs": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "NuGet.ProjectModel/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.DependencyResolver.Core": "6.12.0-rc.115"
+        }
+      },
+      "NuGet.Protocol/6.12.0-rc.115": {
+        "dependencies": {
+          "NuGet.Packaging": "6.12.0-rc.115"
+        }
+      },
+      "NuGet.Versioning/6.12.0-rc.115": {},
+      "System.CodeDom/9.0.0-rc.2.24473.5": {},
+      "System.Collections.Immutable/8.0.0": {},
+      "System.CommandLine/2.0.0-beta4.24324.3": {},
+      "System.Configuration.ConfigurationManager/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "9.0.0-rc.2.24473.5",
+          "System.Security.Cryptography.ProtectedData": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "System.Diagnostics.EventLog/9.0.0-rc.2.24473.5": {},
+      "System.Formats.Asn1/9.0.0-rc.2.24473.5": {},
+      "System.Formats.Nrbf/9.0.0-rc.2.24473.5": {},
+      "System.Reflection.Metadata/8.0.0": {
+        "dependencies": {
+          "System.Collections.Immutable": "8.0.0"
+        }
+      },
+      "System.Reflection.MetadataLoadContext/9.0.0-rc.2.24473.5": {},
+      "System.Resources.Extensions/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "System.Formats.Nrbf": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "System.Security.Cryptography.Pkcs/9.0.0-rc.2.24473.5": {},
+      "System.Security.Cryptography.ProtectedData/9.0.0-rc.2.24473.5": {},
+      "System.Security.Cryptography.Xml/9.0.0-rc.2.24473.5": {
+        "dependencies": {
+          "System.Security.Cryptography.Pkcs": "9.0.0-rc.2.24473.5"
+        }
+      },
+      "System.Text.Json/9.0.0-rc.2.24473.5": {},
+      "Valleysoft.DockerCredsProvider/2.2.1": {
+        "dependencies": {
+          "System.Text.Json": "9.0.0-rc.2.24473.5"
+        },
+        "runtime": {
+          "lib/net6.0/Valleysoft.DockerCredsProvider.dll": {
+            "assemblyVersion": "2.2.1.0",
+            "fileVersion": "2.2.1.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Microsoft.NET.Build.Containers/9.0.100-rc.2.24474.11": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Build/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7JS4ivgW8YkePTyK71pCQgT4fIiY4aJaIzIuM5GsMj4h6VGfblCl1jVzRMZRBzc8P6jwE3YE3QTRdV2oZuTwKw==",
+      "path": "microsoft.build/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.build.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Microsoft.Build.Framework/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-V8rf323qktCPVUC6iIWqvfhpISGKX7cTckbHpY/wQd44qrcQox4CNYip8rYGe4PBrF2XYYL8qVFkANzlYt9NzQ==",
+      "path": "microsoft.build.framework/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.build.framework.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Microsoft.Build.Runtime/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DUbqsqfYFID9OL+hb1tcBSKWYOXnE3M1oLp9vCb5UELm8H28bFOEkGWmDN93ScHjw6vhd76pQ7C4cnfH6CUUsA==",
+      "path": "microsoft.build.runtime/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.build.runtime.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Microsoft.Build.Tasks.Core/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2MFF+qTw4k5JdDeb18bbUtD++tk5ciA8tpwsBz2Ek6w8hMq7MkGeRCgp21tdYHYJbDhZaq0Pn5N1+9rgXdjtaQ==",
+      "path": "microsoft.build.tasks.core/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.build.tasks.core.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Microsoft.Build.Utilities.Core/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+BGvT0yGh+nsTxmZc8dIjDiw+eiIvpiWrtasSuAUpgRUXZmsN9S5oRLSsSKNinjswCgBCl9P3w7rbdEuVf29vA==",
+      "path": "microsoft.build.utilities.core/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.build.utilities.core.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.PublicApiAnalyzers/3.11.0-beta1.24454.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ScHoSg73ycnxDapvttS63HNNGMTyyMTEjag1qKuse/PNVRxcJidYeJFE1mgnaxN8BSxqm9cir33SEmSbMXkGVw==",
+      "path": "microsoft.codeanalysis.publicapianalyzers/3.11.0-beta1.24454.1",
+      "hashPath": "microsoft.codeanalysis.publicapianalyzers.3.11.0-beta1.24454.1.nupkg.sha512"
+    },
+    "Microsoft.DotNet.XliffTasks/9.0.0-beta.24466.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AhKEcVnMMMhjLC1DWZ5T1fAFPv2cN3yPP1oDpVuZIuZF3gxuAn8QrYr0KuvEkjk7pmn4msWFp00QEjRmHj1VSQ==",
+      "path": "microsoft.dotnet.xlifftasks/9.0.0-beta.24466.2",
+      "hashPath": "microsoft.dotnet.xlifftasks.9.0.0-beta.24466.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FHb7uxiX/08FBBtwat7fiBdQltxst1Farux6Ifn1dfke+D8h1rcDj1ZbKzNB9SvLh1XmEXNYmoWGkTjt1mVzXg==",
+      "path": "microsoft.extensions.dependencyinjection/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.dependencyinjection.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T8oVF5Kz+J5IVagQAqcFFUrc/JrjaSvpACSm+t6cNolBX1S41PZVe3JLa3bxKnz0GTkUfSPPIkaekLmpAmHu3Q==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyModel/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y+L5r4bqbSbhTVVQ8wt7AaO8vtB2ZgEfzI1gN3Ia/vBIsfECOQK8bDItAi7ikb1kk9c0unDnJnM08BuO59ydEQ==",
+      "path": "microsoft.extensions.dependencymodel/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.dependencymodel.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FZe8VCCAkkDOyek1ZlMmakDJNkA+cojDLpTtl5Pm4H5MdWS6WWGSfoDi++V1XiDUympTJ/S0iItSxfFf/M5e6w==",
+      "path": "microsoft.extensions.logging/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.logging.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GFglWb+13UaNAoIN1Pxvlm+/iBblBw0LHTu3dYPVCNTD2cQHM2SORFpb/s+QqKs0iT0SAwC27CnSsCKh3eGH6A==",
+      "path": "microsoft.extensions.logging.abstractions/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.logging.abstractions.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yv1/d9PHKB6W2KnyjgASAKU9siFtHQzFKcMLaGtEn95c2/j8ATKZkt+d4MbzxRY7fYtMyK7SOSMAFr3LybyWiw==",
+      "path": "microsoft.extensions.options/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.options.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gNj30XW3pWU6CqitHqR4OBUzqauunjzHe3hJBeueE1OcXBIs9C1XpnmyNVTvBUC+ENgxU06N8hnXHNu0rveIBA==",
+      "path": "microsoft.extensions.primitives/9.0.0-rc.2.24473.5",
+      "hashPath": "microsoft.extensions.primitives.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Microsoft.NET.StringTools/17.12.0-preview-24473-03": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w40yM7X+zmM+72VCa3sUSGo7tUfH3ujbOMIH13kdtg98wMe6qtPsIdFn1MEJYNXZa716D3BjkjqZSFFw1LvLPA==",
+      "path": "microsoft.net.stringtools/17.12.0-preview-24473-03",
+      "hashPath": "microsoft.net.stringtools.17.12.0-preview-24473-03.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+    },
+    "NuGet.Common/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-e5kT5ieYZQ3x7rkMnlO6W4mJgwBfEBtKpCMg5oF8h6KktIYTG4xe70J4/vnOZKJid7VrdSVsiYapWJOu4TQnIg==",
+      "path": "nuget.common/6.12.0-rc.115",
+      "hashPath": "nuget.common.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.Configuration/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-63sqlIOd6c7ZooM4Zqq+kIgovpCtJRfim5g+5L5kb0GRpCS+O+glsgkInVATopWkzaedS+8/s8prCZkcYN0YCA==",
+      "path": "nuget.configuration/6.12.0-rc.115",
+      "hashPath": "nuget.configuration.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.DependencyResolver.Core/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y9P7RhCAvVRvWX5af6jVhtnuE/vHFIrr2k7kDp1UGKHstvmQRwHjR+uNPLRfiNKlff6JFILbJZS61RQ472sODw==",
+      "path": "nuget.dependencyresolver.core/6.12.0-rc.115",
+      "hashPath": "nuget.dependencyresolver.core.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.Frameworks/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qZRtxye9LyAUzP6fimuevi6FYdTAE0uwE4s13WUybvwgkvX2MfMbR57ER4UBdPxRo3cJUilquwRqzGNIeridtA==",
+      "path": "nuget.frameworks/6.12.0-rc.115",
+      "hashPath": "nuget.frameworks.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.LibraryModel/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-b/Jnlk0f/PJmFvdsEQTCRZBR1Ck3zmd7Ev2+jS9P7anSJ0I0EGh5RmVjxGelZBR0qc8s0cevk+Cp/FjijavLqw==",
+      "path": "nuget.librarymodel/6.12.0-rc.115",
+      "hashPath": "nuget.librarymodel.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.Packaging/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ntnPv1fK0y+rk2s+lrcMtCC5Fr7pV2bKrK4Qs3CjFzAT+nzX9QIwsrgOaRPuWx+fQvEPWyXVb14av+nqi2AtlA==",
+      "path": "nuget.packaging/6.12.0-rc.115",
+      "hashPath": "nuget.packaging.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.ProjectModel/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZkEUZDZG9UpEnL12ekgcZC3VXvua8sE9dEIPiOYhMKOu8Zy5HuPDlsoLBUSg42H/oI2mc7SrawKA3dHkLvfIsQ==",
+      "path": "nuget.projectmodel/6.12.0-rc.115",
+      "hashPath": "nuget.projectmodel.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.Protocol/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-edfZkbhljPH694EgNlBZEmdbryeqJYBW4i6QmW4z7KLWgK5VmA3fzzB3FEiRO/lEEMmmhmNzaCeHBvZpjTCSrA==",
+      "path": "nuget.protocol/6.12.0-rc.115",
+      "hashPath": "nuget.protocol.6.12.0-rc.115.nupkg.sha512"
+    },
+    "NuGet.Versioning/6.12.0-rc.115": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8WJeU6kF8jK6fMQFDwGuNTyKv3WPXU0s/sSiurgaSQclbBENkHWZrCDCcg8B3wAgeIL07vUKIJvMLkSm5v243Q==",
+      "path": "nuget.versioning/6.12.0-rc.115",
+      "hashPath": "nuget.versioning.6.12.0-rc.115.nupkg.sha512"
+    },
+    "System.CodeDom/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-d8zloTNzRWZdVnPARKlfAHXMKDfdcvXMvRoZlJ2xZIwsma9SHGwigkEPOUjDR9xzP1xQyojj8AU0+7zn1JuVPA==",
+      "path": "system.codedom/9.0.0-rc.2.24473.5",
+      "hashPath": "system.codedom.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Collections.Immutable/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
+      "path": "system.collections.immutable/8.0.0",
+      "hashPath": "system.collections.immutable.8.0.0.nupkg.sha512"
+    },
+    "System.CommandLine/2.0.0-beta4.24324.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UddDcdPmeAbRpkYHOMBHYS74UINTL5yXhzHTbruhVN7eR79J8RPGgq1nNXlz5TH4iMK/Fn6OlSFf4Z2UxCJpXw==",
+      "path": "system.commandline/2.0.0-beta4.24324.3",
+      "hashPath": "system.commandline.2.0.0-beta4.24324.3.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4f6sY++OiBxsho7BSScMDs94Oa/UbC92kpAei3w9mswEziMIlGav9miEoCm5pY1rOMYMtMRr2lBq9GDhlN/Bog==",
+      "path": "system.configuration.configurationmanager/9.0.0-rc.2.24473.5",
+      "hashPath": "system.configuration.configurationmanager.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Diagnostics.EventLog/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-d37ltVHeoZ0yLGFN1igt0FyIMz5mWPPTm/gDftPcQdefQx8NrLWr3YXv7nUe5WcfQmlk4yDT5kHIIqIXxz5xgg==",
+      "path": "system.diagnostics.eventlog/9.0.0-rc.2.24473.5",
+      "hashPath": "system.diagnostics.eventlog.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Formats.Asn1/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T7T1kH5MU5pd3jo+lPxKOvcUrvsNiGJpOVOM641CRWAy8HRdk55fmmOqcGYZQ2p8+qDOeMUikQyi5dbNVGEJjg==",
+      "path": "system.formats.asn1/9.0.0-rc.2.24473.5",
+      "hashPath": "system.formats.asn1.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Formats.Nrbf/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OP8k4RJcqPTbOCZGS1PnSgxxO7q5AFu8bFTCH7//neTISrUTPORbekAB4Q83VQVu7kfNxnGPTbGnm9arB9phgA==",
+      "path": "system.formats.nrbf/9.0.0-rc.2.24473.5",
+      "hashPath": "system.formats.nrbf.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Reflection.Metadata/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ptvgrFh7PvWI8bcVqG5rsA/weWM09EnthFHR5SCnS6IN+P4mj6rE1lBDC4U8HL9/57htKAqy4KQ3bBj84cfYyQ==",
+      "path": "system.reflection.metadata/8.0.0",
+      "hashPath": "system.reflection.metadata.8.0.0.nupkg.sha512"
+    },
+    "System.Reflection.MetadataLoadContext/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/PpFNYeSNZ3FHV0PON85vj7CvfbTqpPqdn17d2wTXiWdzM+p7aSpQP6R53N3D3hxO0926PeJ5ZGVW5SGIAvjYQ==",
+      "path": "system.reflection.metadataloadcontext/9.0.0-rc.2.24473.5",
+      "hashPath": "system.reflection.metadataloadcontext.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Resources.Extensions/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jI+xLFb7UNEsJM8TdqNGWqc1e6SoEAhObhuUKjz0scr3UokuppEFNPYYN/8xXTvEp25t3cGZq/kgZZxW5Nji/A==",
+      "path": "system.resources.extensions/9.0.0-rc.2.24473.5",
+      "hashPath": "system.resources.extensions.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Security.Cryptography.Pkcs/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OGtdLGaHS+6IUg1aQE+6n4IC8NNE0vIYBr7rVorayW1sJeDxOXNOt/ZDm5cNEJF9ErZZen7j4Tg4Nrzfx4nmOA==",
+      "path": "system.security.cryptography.pkcs/9.0.0-rc.2.24473.5",
+      "hashPath": "system.security.cryptography.pkcs.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WmEKZcNdOoUSEVQVTs8LsD0WdnliOij0G4s9ljfVTFekI82JWk3WfvlpFzDsc7sXO12w/ckXrkaaRkiUBT8Gyw==",
+      "path": "system.security.cryptography.protecteddata/9.0.0-rc.2.24473.5",
+      "hashPath": "system.security.cryptography.protecteddata.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Security.Cryptography.Xml/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-egl1hxO8LRzhM8NftHafY9vJPg4Xkq2exXGHEz45giMUUXv2RPKXfgiHs8zFsaJoWKyDUa4kRKhFUrXBc5TEFw==",
+      "path": "system.security.cryptography.xml/9.0.0-rc.2.24473.5",
+      "hashPath": "system.security.cryptography.xml.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "System.Text.Json/9.0.0-rc.2.24473.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IsQCD+zBcFhteX7fUrS4cU/GvfLPy8F4oLtC9VBcF1U1qu1gZB/zlAxW8G0kqmAiXI84/gowZtcX1MjLk2QWoQ==",
+      "path": "system.text.json/9.0.0-rc.2.24473.5",
+      "hashPath": "system.text.json.9.0.0-rc.2.24473.5.nupkg.sha512"
+    },
+    "Valleysoft.DockerCredsProvider/2.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5EoQdAn6r4D2t7Hp5bs7IO0n44zIdnpJ7H0fMZfmB8NPb8uLP6rttoXgNS+Fp22i9C//9MeQ+0E0Gu+RgNgOfA==",
+      "path": "valleysoft.dockercredsprovider/2.2.1",
+      "hashPath": "valleysoft.dockercredsprovider.2.2.1.nupkg.sha512"
+    }
+  }
+}
