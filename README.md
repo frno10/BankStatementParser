@@ -1,10 +1,10 @@
 # BankStatementParsing
 
-[![Build Status](https://github.com/your-org/BankStatementParsing/actions/workflows/dotnet.yml/badge.svg)](https://github.com/your-org/BankStatementParsing/actions)
-[![Tests](https://github.com/your-org/BankStatementParsing/actions/workflows/test.yml/badge.svg)](https://github.com/your-org/BankStatementParsing/actions)
+[![Build Status](https://github.com/frno10/BankStatementParser/actions/workflows/dotnet.yml/badge.svg)](https://github.com/frno10/BankStatementParser/actions)
+[![Tests](https://github.com/frno10/BankStatementParser/actions/workflows/test.yml/badge.svg)](https://github.com/frno10/BankStatementParser/actions)
 [![.NET](https://img.shields.io/badge/.NET-6.0%2B-blue)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/github/license/your-org/BankStatementParsing)](LICENSE)
-[![codecov](https://codecov.io/gh/your-org/BankStatementParsing/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/BankStatementParsing)
+[![License](https://img.shields.io/github/license/frno10/BankStatementParser)](LICENSE)
+[![codecov](https://codecov.io/gh/frno10/BankStatementParser/branch/main/graph/badge.svg)](https://codecov.io/gh/frno10/BankStatementParser)
 
 ---
 
@@ -25,8 +25,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/BankStatementParsing.git
-cd BankStatementParsing
+git clone https://github.com/frno10/BankStatementParser.git
+cd BankStatementParser
 
 # Build the solution
 dotnet build
@@ -68,7 +68,7 @@ See the [Documentation Table of Contents](Documentation/README.md) for detailed 
 
 ## Code Coverage
 
-[![codecov](https://codecov.io/gh/your-org/BankStatementParsing/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/BankStatementParsing)
+[![codecov](https://codecov.io/gh/frno10/BankStatementParser/branch/main/graph/badge.svg)](https://codecov.io/gh/frno10/BankStatementParser)
 
 To enable code coverage reporting:
 1. Add Coverlet to your test project:
