@@ -52,3 +52,28 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Application-specific
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Log files (additional patterns)
+logs/
+Logs/
+*.log
+
+# Coverage reports
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# IDE files
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
