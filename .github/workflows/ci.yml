@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install GitVersion
+        uses: GitTools/actions/gitversion/setup@v0.9.18
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
