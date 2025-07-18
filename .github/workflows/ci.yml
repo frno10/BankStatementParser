@@ -22,9 +22,9 @@ jobs:
       - name: Run GitVersion
         id: gitversion
         run: |
-          export PATH="$PATH:~/.dotnet/tools"
+          export PATH="$PATH:$HOME/.dotnet/tools"
           GitVersion /output json /showvariable FullSemVer > version.txt
-          echo "##[set-output name=version;]$(cat version.txt)"
+          echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
       - name: Build
         run: dotnet build --no-restore --configuration Release /p:Version=$(cat version.txt)
       - name: Test with coverage
@@ -62,9 +62,9 @@ jobs:
       - name: Run GitVersion
         id: gitversion
         run: |
-          export PATH="$PATH:~/.dotnet/tools"
+          export PATH="$PATH:$HOME/.dotnet/tools"
           GitVersion /output json /showvariable FullSemVer > version.txt
-          echo "##[set-output name=version;]$(cat version.txt)"
+          echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
