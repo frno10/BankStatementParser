@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BankStatementParsing.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d945e6ec75193265f744466aa1cbd6593d1a31d9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f3b491067a6cf9aaab4231ed027333f188cea11")]
 [assembly: System.Reflection.AssemblyProductAttribute("BankStatementParsing.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BankStatementParsing.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
